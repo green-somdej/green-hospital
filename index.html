@@ -103,7 +103,8 @@ body.has-bg .band:not(.white) .band-head h2,body.has-bg .viewhead{text-shadow:0 
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
 .scene{display:block;width:100%;height:clamp(240px,62vw,360px);flex:none;overflow:visible}
 .hero-photo{position:relative;z-index:2;padding-bottom:32px}
-.hero-photo img{width:100%;max-height:420px;object-fit:cover;border-radius:18px}
+.hero-photo .frame{overflow:hidden;border-radius:22px;box-shadow:0 24px 50px -18px rgba(12,74,46,.45);animation:rise 1s .35s cubic-bezier(.2,.8,.2,1) both}
+.hero-photo img{width:100%;height:clamp(240px,34vw,460px);object-fit:cover;transform-origin:62% 45%;animation:kb 22s ease-in-out infinite alternate}
 .blades{animation:turn 9s linear infinite}
 .blades.b{animation-duration:12s}
 @keyframes turn{to{transform:rotate(360deg)}}
@@ -130,9 +131,10 @@ body.has-bg .band:not(.white) .band-head h2,body.has-bg .viewhead{text-shadow:0 
 .features p{color:var(--muted);margin-top:4px}
 
 .catlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,350px),1fr));gap:12px}
-.catlink{display:flex;gap:14px;align-items:center;height:100%;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
-.catlink:hover{border-color:var(--c);transform:translateY(-2px)}
-.catlink small{display:block;color:var(--muted);font-size:.85rem}
+.catlink{display:flex;gap:14px;align-items:center;height:100%;padding:14px 16px;background:linear-gradient(120deg,#fff 40%,color-mix(in srgb,var(--c) 14%,#fff));border:1.5px solid color-mix(in srgb,var(--c) 28%,#fff);border-left:6px solid var(--c);border-radius:var(--radius);text-decoration:none;color:var(--ink);transition:transform .25s,box-shadow .25s,border-color .25s}
+.catlink:hover{transform:translateY(-4px);box-shadow:0 14px 28px -14px var(--c);border-color:var(--c)}
+.catlink:hover .ic{animation:wob .6s ease-in-out}
+.catlink small{display:block;color:var(--c-text);font-weight:600;font-size:.85rem}
 .catlink strong{display:block;font:500 1.02rem/1.4 var(--head)}
 .ic{--s:44px;width:var(--s);height:var(--s);flex:none;border-radius:12px;background:var(--c,var(--green));color:var(--on,#fff);display:flex;align-items:center;justify-content:center}
 .ic svg{width:58%;height:58%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -160,19 +162,30 @@ body.has-bg .band:not(.white) .band-head h2,body.has-bg .viewhead{text-shadow:0 
 .results .none{padding:14px;color:var(--muted)}
 
 .catgrid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:26px;align-items:start;padding-bottom:48px}
-.catnav{position:sticky;top:82px;display:flex;flex-direction:column;gap:4px}
-.catnav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;text-decoration:none;color:var(--ink);font:500 .94rem/1.35 var(--head);min-height:52px}
-.catnav a:hover{background:var(--tint)}
-.catnav a[aria-current=page]{background:var(--surface);box-shadow:inset 0 0 0 2px var(--c)}
-.catnav .ic{--s:36px;border-radius:10px}
+.catnav{position:sticky;top:82px;display:flex;flex-direction:column;gap:8px}
+.catnav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;text-decoration:none;color:var(--ink);font:500 .96rem/1.35 var(--head);min-height:62px;
+  background:color-mix(in srgb,var(--c) 11%,#fff);border:1.5px solid color-mix(in srgb,var(--c) 30%,#fff);border-left:6px solid var(--c);transition:transform .25s,background .25s,box-shadow .25s}
+.catnav a:hover{background:color-mix(in srgb,var(--c) 20%,#fff);transform:translateX(4px)}
+.catnav a[aria-current=page]{background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 78%,#000));color:var(--on);border-color:var(--c);box-shadow:0 12px 24px -12px var(--c);transform:none}
+.catnav a[aria-current=page] .ic{background:rgba(255,255,255,.24);color:var(--on);animation:wob 2.4s ease-in-out infinite}
+.catnav a[aria-current=page] small{color:var(--on);opacity:.9}
+.catnav .ic{--s:40px;border-radius:12px}
+.catnav small{display:block;font:600 .78rem var(--body);color:var(--c-text);letter-spacing:.02em}
 .catnav .nm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 @media(max-width:900px){
   .catgrid{grid-template-columns:minmax(0,1fr);gap:14px}
   .catnav{position:static;flex-direction:row;overflow-x:auto;scroll-snap-type:x proximity;margin-inline:calc(var(--gutter)*-1);padding:4px var(--gutter) 10px}
-  .catnav a{flex:none;width:210px;scroll-snap-align:start;background:var(--surface);border:1px solid var(--line)}
+  .catnav{scrollbar-width:thin;scrollbar-color:rgba(20,99,63,.35) transparent}
+  .catnav a{flex:none;width:220px;scroll-snap-align:start}
+  .catnav a:hover{transform:none}
 }
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,32px);min-width:0;scroll-margin-top:84px}
-.cat-head{display:flex;gap:14px;align-items:center}
+.panel{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--c,var(--green));border-radius:18px;padding:clamp(18px,3vw,32px);min-width:0;scroll-margin-top:84px}
+.panel>*{animation:rise .55s cubic-bezier(.2,.8,.2,1) both}
+.panel>*:nth-child(2){animation-delay:.06s}.panel>*:nth-child(3){animation-delay:.12s}.panel>*:nth-child(n+4){animation-delay:.18s}
+.cat-head{display:flex;gap:14px;align-items:center;margin:calc(clamp(18px,3vw,32px)*-1) calc(clamp(18px,3vw,32px)*-1) 0;padding:clamp(18px,3vw,28px) clamp(18px,3vw,32px);
+  background:linear-gradient(120deg,color-mix(in srgb,var(--c) 16%,#fff),#fff 75%);border-radius:12px 12px 0 0}
+.cat-head .eyebrow{color:var(--c-text);font-weight:600}
+.cat-head .ic.big{animation:pop .6s cubic-bezier(.3,1.5,.5,1) both}
 .cat-head h2:focus{outline:none}
 .desc{margin-top:14px;white-space:pre-line;max-width:75ch}
 .desc.clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
@@ -190,7 +203,9 @@ body.has-bg .band:not(.white) .band-head h2,body.has-bg .viewhead{text-shadow:0 
 .row span{overflow-wrap:anywhere}
 .gallery{position:sticky;top:86px}
 .gmain{display:block;width:100%;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--tint);cursor:zoom-in;min-height:160px}
-.gmain img{width:100%;height:auto;max-height:560px;object-fit:contain}
+.gmain img{width:100%;height:auto;max-height:560px;object-fit:contain;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.gmain:hover img{transform:scale(1.06)}
+.gmain img[src]{animation:fadeIn .6s ease both}
 .thumbs{display:flex;gap:8px;margin-top:8px;overflow-x:auto;padding:3px}
 .thumbs button{flex:none;width:68px;height:68px;padding:0;border:2px solid transparent;border-radius:10px;overflow:hidden;background:var(--tint)}
 .thumbs button[aria-current=true]{border-color:var(--c,var(--green))}
@@ -211,10 +226,16 @@ body.has-bg .band:not(.white) .band-head h2,body.has-bg .viewhead{text-shadow:0 
 
 /* ---------- การ์ดกิจกรรม ---------- */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:18px}
-.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
-.media{display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:4/3;padding:0;border:0;background:color-mix(in srgb,var(--c) 12%,#fff);color:var(--c-text)}
+.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:var(--radius);overflow:hidden;transition:transform .3s,box-shadow .3s}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 34px -16px color-mix(in srgb,var(--c) 70%,#000)}
+.media{display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:4/3;padding:0;border:0;overflow:hidden;background:color-mix(in srgb,var(--c) 12%,#fff);color:var(--c-text)}
 button.media{cursor:zoom-in}
-.media img{width:100%;height:100%;object-fit:contain}
+.media.noimg{cursor:default}
+.media.noimg::after{content:"";width:72px;height:72px;opacity:.55;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 19c0-8 6-14 15-14 0 9-6 15-14 15z' fill='%2314633f'/%3E%3Cpath d='M5 19l8-8' stroke='%23fff' stroke-width='1.3'/%3E%3C/svg%3E") center/contain no-repeat}
+.media img{width:100%;height:100%;object-fit:contain;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.media img[src]{animation:fadeIn .6s ease both}
+.card:hover .media img{transform:scale(1.1)}
+.card:hover .media svg{animation:wob .8s ease-in-out}
 .media svg{width:56px;height:56px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .card-body{display:flex;flex-direction:column;gap:4px;flex:1;padding:14px 16px 16px}
 .meta{font-size:.86rem;color:var(--muted)}
@@ -223,9 +244,9 @@ button.media{cursor:zoom-in}
 .card-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:10px;font-size:.86rem;color:var(--muted)}
 .card-foot a{color:var(--c-text);font-weight:600;font-size:.95rem;padding-block:6px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:3px 3px 12px;margin-bottom:12px}
-.chips a{flex:none;display:flex;align-items:center;min-height:40px;padding:4px 14px;border:1.5px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);text-decoration:none;font-size:.92rem}
-.chips a:hover{border-color:var(--green)}
-.chips a[aria-current=true]{background:var(--green);border-color:var(--green);color:#fff}
+.chips a{--c:var(--green);--on:#fff;flex:none;display:flex;align-items:center;min-height:42px;padding:4px 16px;border:2px solid color-mix(in srgb,var(--c) 40%,#fff);border-radius:999px;background:color-mix(in srgb,var(--c) 10%,#fff);color:var(--c-text,var(--ink));text-decoration:none;font:500 .94rem var(--head);transition:transform .2s,background .2s}
+.chips a:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--c) 20%,#fff)}
+.chips a[aria-current=true]{background:var(--c);border-color:var(--c);color:var(--on);box-shadow:0 8px 18px -10px var(--c)}
 
 /* ---------- สไลด์ ---------- */
 .slider{margin-bottom:40px;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
@@ -275,7 +296,32 @@ footer strong{display:block;font:600 1.05rem var(--head)}
 footer p{font-size:.92rem;opacity:.95}
 .stats{text-align:right}
 @media(max-width:700px){.stats{text-align:left}}
+/* ---------- ภาพเคลื่อนไหว ---------- */
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.14)}}
+@keyframes kbIn{from{opacity:0;transform:scale(1.14)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.4) rotate(-20deg)}to{opacity:1;transform:none}}
+@keyframes wob{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg) scale(1.08)}75%{transform:rotate(7deg) scale(1.04)}}
+@keyframes drift{0%{transform:translate(0,-10vh) rotate(0)}100%{transform:translate(var(--dx,12vw),110vh) rotate(var(--r,540deg))}}
+@keyframes sway{from{margin-left:-14px}to{margin-left:14px}}
+.hero-copy>*{animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
+.hero-copy>:nth-child(2){animation-delay:.1s}.hero-copy>:nth-child(3){animation-delay:.2s}.hero-copy>:nth-child(4){animation-delay:.3s}.hero-copy>:nth-child(5){animation-delay:.4s}
+#bgPhoto{animation:kb 40s ease-in-out infinite alternate}
+#slImg.go,#slBlur.go{animation:kbIn 7s cubic-bezier(.2,.7,.2,1) both}
+#lb[open] #lbImg{animation:kbIn .45s cubic-bezier(.2,.8,.2,1) both}
+.leaves{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.leaves i{position:absolute;top:0;width:var(--s,22px);height:var(--s,22px);opacity:.85;animation:drift var(--t,16s) linear var(--d,0s) infinite}
+.leaves i::before{content:"";display:block;width:100%;height:100%;animation:sway 2.6s ease-in-out infinite alternate;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 19c0-8 6-14 15-14 0 9-6 15-14 15z' fill='%237cc04b'/%3E%3Cpath d='M5 19l8-8' stroke='%23fff' stroke-opacity='.7' stroke-width='1.3'/%3E%3C/svg%3E") center/contain no-repeat}
+.leaves i:nth-child(3n)::before{filter:hue-rotate(40deg) saturate(1.3)}
+.leaves i:nth-child(4n)::before{filter:hue-rotate(-60deg) brightness(1.15)}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease var(--d,0s),transform .7s cubic-bezier(.2,.8,.2,1) var(--d,0s)}
+.rv.in{opacity:1;transform:none}
+.card.rv.in:hover{transform:translateY(-6px)}
+.catlink.rv.in:hover{transform:translateY(-4px)}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}
+  .leaves{display:none}.rv{opacity:1;transform:none}
   /* แถบประชาสัมพันธ์ยังเลื่อนอยู่ (กดหยุดได้) แม้เครื่องจะปิดเอฟเฟกต์ภาพเคลื่อนไหว */
   .news .tk-track{animation:tk var(--dur,40s) linear infinite!important}}
 </style>
@@ -311,6 +357,7 @@ footer p{font-size:.92rem;opacity:.95}
   <!-- ========== หน้าปก ========== -->
   <div id="v-home" data-title="Green Hospital | โรงพยาบาลสีเขียว">
     <section class="hero" id="hero">
+      <div class="leaves" id="leaves" aria-hidden="true"></div>
       <svg class="scene" viewBox="740 20 700 590" preserveAspectRatio="xMaxYMax meet" aria-hidden="true">
         <defs><pattern id="win" width="34" height="34" patternUnits="userSpaceOnUse"><rect x="6" y="8" width="20" height="16" rx="2" fill="#a9d8e4"/></pattern></defs>
         <circle cx="1345" cy="110" r="50" fill="#f6cf4f"/>
@@ -344,7 +391,7 @@ footer p{font-size:.92rem;opacity:.95}
             <a class="btn lg" href="#/activities">ดูกิจกรรม</a>
           </div>
         </div>
-        <div class="hero-photo" id="heroPhoto" hidden><img id="heroImg" alt="ภาพโรงพยาบาล" referrerpolicy="no-referrer"></div>
+        <div class="hero-photo" id="heroPhoto" hidden><div class="frame"><img id="heroImg" alt="ภาพโรงพยาบาล" referrerpolicy="no-referrer"></div></div>
       </div>
     </section>
 
@@ -532,9 +579,34 @@ function loadImg(u,w){
 const lazy=new IntersectionObserver(es=>es.forEach(en=>{
   if(!en.isIntersecting) return;
   const el=en.target; lazy.unobserve(el);
-  loadImg(el.dataset.src,+el.dataset.w||800).then(src=>{el.src=src;}).catch(()=>{el.hidden=true;});
+  loadImg(el.dataset.src,+el.dataset.w||800).then(src=>{el.src=src;}).catch(()=>{ el.hidden=true; el.parentElement.classList.add('noimg'); });
 }),{rootMargin:'300px'});
 const lazyIn=root=>root.querySelectorAll('img[data-src]').forEach(el=>lazy.observe(el));
+
+/* ---------- เนื้อหาค่อย ๆ ลอยขึ้นเมื่อเลื่อนมาถึง ---------- */
+const rvIO=new IntersectionObserver(es=>es.forEach(en=>{
+  if(!en.isIntersecting) return;
+  const el=en.target; rvIO.unobserve(el); el.classList.add('in');
+  setTimeout(()=>el.classList.remove('rv','in'),1400);
+}),{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+function reveal(root){
+  if(REDUCED) return;
+  root.querySelectorAll('.catlink,.features li,.steps li,.card,.emb,.band-head,.mascot').forEach((el,i)=>{
+    if(el.dataset.rv) return; el.dataset.rv=1;
+    el.classList.add('rv'); el.style.setProperty('--d',(i%6)*0.07+'s'); rvIO.observe(el);
+  });
+}
+
+/* ใบไม้ปลิวบนหน้าปก */
+(function(){
+  if(REDUCED) return;
+  const box=$('leaves');
+  for(let i=0;i<10;i++){
+    const l=document.createElement('i');
+    l.style.cssText='left:'+(Math.random()*95)+'%;--s:'+(14+Math.random()*18)+'px;--t:'+(13+Math.random()*12)+'s;--d:'+(-Math.random()*25)+'s;--dx:'+(Math.random()*24-6)+'vw;--r:'+(300+Math.random()*400)+'deg';
+    box.appendChild(l);
+  }
+})();
 
 /* ---------- ลิงก์ ---------- */
 const isViewable=u=>/drive\.google\.com\/(drive\/(u\/\d+\/)?folders\/|file\/d\/|open\?|uc\?)|docs\.google\.com\/(document|spreadsheets|presentation)\/d\//.test(u);
@@ -667,6 +739,7 @@ function renderHomeCats(){
   if(S.state==='loading'){ box.innerHTML=Array(6).fill('<li class="sk"></li>').join(''); sec.hidden=false; return; }
   sec.hidden=!S.cats.length;
   box.innerHTML=S.cats.map((c,i)=>'<li><a class="catlink" style="'+colorVars(c,i)+'" href="#/cats/'+c.n+'"><span class="ic">'+iconOf(c,i)+'</span><span><small>หมวด '+pad2(c.n)+'</small><strong>'+esc(c.name)+'</strong></span></a></li>').join('');
+  reveal(box);
 }
 
 /* ---------- หน้าหมวด ---------- */
@@ -678,7 +751,7 @@ function stateNotice(){
 document.addEventListener('click',e=>{ if(e.target.closest('[data-retry]')) load(); });
 
 function renderCatNav(n){
-  $('catnav').innerHTML=S.cats.map((c,i)=>'<a href="#/cats/'+c.n+'" style="'+colorVars(c,i)+'"'+(c.n===n?' aria-current="page"':'')+'><span class="ic">'+iconOf(c,i)+'</span><span class="nm">'+esc(c.name)+'</span></a>').join('');
+  $('catnav').innerHTML=S.cats.map((c,i)=>'<a href="#/cats/'+c.n+'" style="'+colorVars(c,i)+'"'+(c.n===n?' aria-current="page"':'')+'><span class="ic">'+iconOf(c,i)+'</span><span><small>หมวด '+pad2(c.n)+'</small><span class="nm">'+esc(c.name)+'</span></span></a>').join('');
   const cur=$('catnav').querySelector('[aria-current]');
   if(cur&&innerWidth<=900) $('catnav').scrollLeft=cur.offsetLeft-$('catnav').offsetLeft-16;
 }
@@ -706,7 +779,7 @@ function renderCat(n,focus){
     +'<section class="sect"><h3>กิจกรรมของหมวดนี้ ('+thNum(myActs.length)+')</h3>'
     +(myActs.length?'<div class="cards">'+myActs.slice(0,6).map((x,k)=>cardHtml(x,k)).join('')+'</div>'+(myActs.length>6?'<p style="margin-top:14px"><a class="btn" href="#/activities/'+c.n+'">ดูกิจกรรมทั้งหมดของหมวดนี้</a></p>':''):'<p class="muted">ยังไม่มีกิจกรรมในหมวดนี้</p>')
     +'</section>';
-  lazyIn(panel);
+  lazyIn(panel); reveal(panel);
 
   const d=$('desc'), m=$('more');
   if(d&&d.scrollHeight>d.clientHeight+2){
@@ -817,9 +890,9 @@ function renderActs(filter){
   const count=n=>S.acts.filter(x=>catNumOf(x)===n).length;
   $('actSub').textContent=filter?'':(S.acts.length?'อัปเดตล่าสุด '+S.acts[0].date:'');
   chips.innerHTML=S.acts.length?'<a href="#/activities"'+(filter?'':' aria-current="true"')+'>ทุกหมวด ('+thNum(S.acts.length)+')</a>'
-    +S.cats.filter(c=>count(c.n)).map(c=>'<a href="#/activities/'+c.n+'" title="'+esc(c.name)+'"'+(filter===c.n?' aria-current="true"':'')+'>หมวด '+pad2(c.n)+' ('+thNum(count(c.n))+')</a>').join(''):'';
+    +S.cats.map((c,i)=>count(c.n)?'<a href="#/activities/'+c.n+'" style="'+colorVars(c,i)+'" title="'+esc(c.name)+'"'+(filter===c.n?' aria-current="true"':'')+'>หมวด '+pad2(c.n)+' ('+thNum(count(c.n))+')</a>':'').join(''):'';
   g.innerHTML=list.length?'<div class="cards">'+list.map((x,i)=>cardHtml(x,i)).join('')+'</div>':'<div class="notice">ยังไม่มีกิจกรรม'+(filter?'ของหมวด '+pad2(filter):'')+'</div>';
-  lazyIn(g);
+  lazyIn(g); reveal(g);
 }
 
 /* ---------- สไลด์ภาพกิจกรรม ---------- */
@@ -838,7 +911,9 @@ function drawSlide(i){
   $('slText').innerHTML=(s.title?'<h3>'+esc(s.title)+'</h3>':'')+(s.caption?'<p>'+esc(s.caption)+'</p>':'')+(s.url?'<a '+linkAttrs(s.url)+' data-title="'+esc(s.title)+'">ดูรายละเอียด</a>':'');
   $('slStage').setAttribute('aria-label','ขยายภาพ '+(s.title||('ที่ '+(SI+1))));
   $('slImg').alt=s.title||'ภาพกิจกรรม';
-  loadImg(s.image,1600).then(src=>{ if(SI===at){ $('slImg').src=src; $('slBlur').src=src; } }).catch(()=>{});
+  loadImg(s.image,1600).then(src=>{ if(SI!==at) return;
+    ['slImg','slBlur'].forEach(id=>{ const el=$(id); el.classList.remove('go'); el.src=src; void el.offsetWidth; el.classList.add('go'); });
+  }).catch(()=>{});
   if(n>1) loadImg(SL[(SI+1)%n].image,1600).catch(()=>{});
   slSchedule();
 }
@@ -971,6 +1046,7 @@ function trackVisit(){
   api('recordVisit',{count:1}).then(r=>{ if(r){ $('visits').hidden=false; $('visits').textContent='ผู้เข้าชมวันนี้ '+thNum(r.today)+' ครั้ง · สะสม '+thNum(r.total)+' ครั้ง'; } }).catch(()=>{});
 }
 $('today').textContent=new Date().toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Bangkok'});
+reveal(document);
 route();
 load();
 trackVisit();
