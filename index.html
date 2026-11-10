@@ -9,6 +9,13 @@
 <meta property="og:title" content="Green Hospital | โรงพยาบาลสีเขียว">
 <meta property="og:description" content="ศูนย์รวมเอกสาร ลิงก์ และกิจกรรมของทั้ง 7 หมวด โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา">
 <meta property="og:type" content="website">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Green Hospital">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314633f'/%3E%3Cpath d='M8 24c0-10 6-16 17-16 0 11-6 17-16 17' fill='%23a7e08a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,6 +78,21 @@ body.has-bg .band:not(.white) .band-head h2,body.has-bg .viewhead{text-shadow:0 
 .mainnav a{display:flex;align-items:center;min-height:44px;padding:4px 16px;border-radius:10px;text-decoration:none;color:var(--ink);font:500 1rem var(--head)}
 .mainnav a:hover{background:var(--tint)}
 .mainnav a[aria-current=page]{background:var(--green);color:#fff}
+.install{margin-left:auto;background:var(--green);color:#fff}
+.install:hover{background:var(--green-dark);border-color:var(--green-dark)}
+#appHelp{width:min(460px,calc(100vw - 32px));height:fit-content;max-height:calc(100dvh - 32px);margin:auto;border-radius:18px;background:var(--surface);color:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+#appHelp .ah-head{display:flex;align-items:center;gap:14px;padding:20px 22px 8px}
+#appHelp .ah-head img{width:56px;height:56px;border-radius:14px;flex:none}
+#appHelp .ah-head h2{font-size:1.2rem}
+#appHelp .ah-head p{color:var(--muted);font-size:.92rem}
+#appHelp ol{list-style:none;counter-reset:s;padding:8px 22px 4px;display:grid;gap:12px}
+#appHelp li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+#appHelp li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--tint);color:var(--green);font:700 1rem var(--head)}
+#appHelp li svg{width:20px;height:20px;vertical-align:-4px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#appHelp .ah-foot{display:flex;justify-content:flex-end;padding:14px 22px 20px}
+.toast.info{background:var(--green-dark)}
+@media(max-width:560px){.brand{font-size:1rem;gap:8px}.brand img{height:34px;max-width:100px}.brand svg{width:32px;height:32px}.install{min-height:36px;padding:4px 10px;font-size:.85rem;gap:5px}.install svg{width:16px;height:16px}}
+@media(max-width:360px){.brand span{display:none}}
 @media(max-width:560px){.mainnav{width:100%}.mainnav a{flex:1;justify-content:center;padding-inline:6px}.top .wrap{padding-block:6px}}
 
 /* ---------- ประชาสัมพันธ์ ---------- */
@@ -337,6 +359,8 @@ footer p{font-size:.92rem;opacity:.95}
       <img id="logo" alt="" hidden referrerpolicy="no-referrer">
       <span>Green Hospital</span>
     </a>
+    <button class="btn sm install" id="installBtn" type="button" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>ติดตั้งแอป</button>
     <nav class="mainnav" aria-label="เมนูหลัก">
       <a href="#/" data-nav="home">หน้าแรก</a>
       <a href="#/cats" data-nav="cats">หมวด</a>
@@ -501,6 +525,14 @@ footer p{font-size:.92rem;opacity:.95}
   <button class="lb-b" id="lbP" type="button" aria-label="ภาพก่อนหน้า">‹</button>
   <button class="lb-b" id="lbN" type="button" aria-label="ภาพถัดไป">›</button>
   <img id="lbImg" alt="" referrerpolicy="no-referrer">
+</dialog>
+<dialog id="appHelp" aria-labelledby="ahTitle">
+  <div class="ah-head">
+    <img src="icons/icon-192.png" alt="">
+    <div><h2 id="ahTitle">ติดตั้งแอป Green Hospital</h2><p>เปิดได้จากไอคอนบนหน้าจอ เหมือนแอปทั่วไป</p></div>
+  </div>
+  <ol id="ahSteps"></ol>
+  <div class="ah-foot"><button class="btn primary" id="ahX" type="button">เข้าใจแล้ว</button></div>
 </dialog>
 <noscript><div class="notice err">เว็บนี้ต้องเปิดใช้งาน JavaScript เพื่อแสดงข้อมูล</div></noscript>
 
@@ -1015,8 +1047,8 @@ window.addEventListener('hashchange',route);
 $('skip').addEventListener('click',e=>{ e.preventDefault(); $('main').focus(); });
 
 /* ---------- โหลดข้อมูล ---------- */
-function toast(msg){
-  const t=document.createElement('button'); t.type='button'; t.className='toast'; t.setAttribute('role','status');
+function toast(msg,kind){
+  const t=document.createElement('button'); t.type='button'; t.className='toast'+(kind?' '+kind:''); t.setAttribute('role','status');
   t.textContent=msg+' (แตะเพื่อปิด)'; t.onclick=()=>t.remove(); document.body.appendChild(t); setTimeout(()=>t.remove(),12000);
 }
 function paint(){
@@ -1025,21 +1057,81 @@ function paint(){
   if(curView==='cats') renderCat(parseInt(location.hash.split('/')[2],10)||0,false);
   if(curView==='activities') renderActs(parseInt(location.hash.split('/')[2],10)||0);
 }
+/* ข้อมูลล่าสุดเก็บไว้ในเครื่อง: เปิดแอปครั้งต่อไปแสดงได้ทันที และใช้ตอนออฟไลน์ */
+const DATA_KEY='gh-data-v1';
+function readSaved(){ try{ const x=JSON.parse(localStorage.getItem(DATA_KEY)||'null'); return x&&x.data?x:null; }catch(e){ return null; } }
+function applyData(d){
+  Object.assign(S,{cats:d.cats||[],acts:d.acts||[],slides:d.slides||[],news:d.news||[],settings:d.settings||{},state:'ready'});
+  buildIndex(); setupSlides(); renderNews(); applySettings();
+}
 async function load(){
   if(!API){ S.state='unconfigured'; paint(); return; }
-  S.state='loading'; paint();
+  const saved=readSaved();
+  if(saved){ applyData(saved.data); } else { S.state='loading'; }
+  paint();
   const slow=setTimeout(()=>{ const m=$('loadMsg'); if(m) m.textContent='เซิร์ฟเวอร์ตอบช้ากว่าปกติ กรุณารอสักครู่…'; },12000);
   try{
     const d=await api('getAll');
-    Object.assign(S,{cats:d.cats||[],acts:d.acts||[],slides:d.slides||[],news:d.news||[],settings:d.settings||{},state:'ready'});
+    if(!saved||JSON.stringify(d)!==JSON.stringify(saved.data)){ applyData(d); paint(); }
     if(d.err&&d.err.length) toast('อ่านข้อมูลบางส่วนไม่ได้: '+d.err.join(' | '));
-    buildIndex(); setupSlides(); renderNews(); applySettings();
+    try{ localStorage.setItem(DATA_KEY,JSON.stringify({t:Date.now(),data:d})); }catch(e){}
   }catch(e){
-    S.state='error';
-    S.error=e instanceof TypeError?'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจอินเทอร์เน็ต หรือให้ผู้ดูแลตรวจว่า Deploy Apps Script แบบ "Anyone" แล้ว':String(e.message||e);
+    if(saved){
+      toast('ไม่มีอินเทอร์เน็ต กำลังแสดงข้อมูลล่าสุดเมื่อ '+new Date(saved.t).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}),'info');
+    }else{
+      S.state='error';
+      S.error=e instanceof TypeError?'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจอินเทอร์เน็ต หรือให้ผู้ดูแลตรวจว่า Deploy Apps Script แบบ "Anyone" แล้ว':String(e.message||e);
+      paint();
+    }
   }
   clearTimeout(slow);
-  paint();
+}
+
+/* ---------- ติดตั้งเป็นแอป ---------- */
+const UA=navigator.userAgent;
+const IS_IOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const IN_LINE=/\bLine\//i.test(UA);
+const IN_APP=IN_LINE||/FBAN|FBAV|FB_IAB|Instagram|MicroMessenger/i.test(UA);
+const IS_STANDALONE=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const SHARE_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+const PLUS_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>';
+let installEvt=null;
+function setInstallBtn(on){ $('installBtn').hidden=!on||IS_STANDALONE(); }
+function showAppHelp(){
+  const steps=IN_APP?[
+    'กดปุ่ม <b>⋯</b> หรือ <b>⋮</b> ที่มุมจอ',
+    'เลือก <b>เปิดในเบราว์เซอร์</b> (Safari หรือ Chrome)',
+    'กดปุ่ม <b>ติดตั้งแอป</b> บนหน้าเว็บอีกครั้ง'
+  ]:IS_IOS?[
+    'กดปุ่ม <b>แชร์</b> '+SHARE_SVG+' (Safari อยู่แถบล่าง ส่วน Chrome และ iPad อยู่มุมขวาบน)',
+    'เลื่อนลงแล้วเลือก <b>เพิ่มไปยังหน้าจอโฮม</b> '+PLUS_SVG,
+    'กด <b>เพิ่ม</b> ที่มุมขวาบน ไอคอน Green Hospital จะอยู่บนหน้าจอ'
+  ]:[
+    'เปิดเมนูของเบราว์เซอร์ (<b>⋮</b> หรือ <b>⋯</b>)',
+    'เลือก <b>ติดตั้งแอป</b> หรือ <b>เพิ่มลงในหน้าจอหลัก</b>',
+    'กดยืนยัน ไอคอน Green Hospital จะอยู่บนหน้าจอ'
+  ];
+  $('ahSteps').innerHTML=steps.map(s=>'<li><span>'+s+'</span></li>').join('');
+  $('appHelp').showModal();
+}
+$('ahX').addEventListener('click',()=>$('appHelp').close());
+$('appHelp').addEventListener('click',e=>{ if(e.target===$('appHelp')) $('appHelp').close(); });
+$('installBtn').addEventListener('click',async()=>{
+  if(installEvt){
+    installEvt.prompt();
+    const r=await installEvt.userChoice.catch(()=>({}));
+    installEvt=null;
+    if(r.outcome==='accepted') setInstallBtn(false);
+    return;
+  }
+  if(IN_LINE){ const u=new URL(location.href); u.searchParams.set('openExternalBrowser','1'); location.href=u.href; return; }
+  showAppHelp();
+});
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installEvt=e; setInstallBtn(true); });
+window.addEventListener('appinstalled',()=>{ installEvt=null; setInstallBtn(false); toast('ติดตั้งแอปเรียบร้อย เปิดได้จากไอคอน Green Hospital บนหน้าจอ','info'); });
+if(IS_IOS||IN_APP) setInstallBtn(true);
+if('serviceWorker' in navigator&&(location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 function trackVisit(){
   if(!API) return;

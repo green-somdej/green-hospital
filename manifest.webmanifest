@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Green Hospital | โรงพยาบาลสีเขียว",
+  "short_name": "Green Hospital",
+  "description": "ศูนย์รวมเอกสาร ลิงก์ และกิจกรรมของทั้ง 7 หมวด โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา",
+  "lang": "th",
+  "dir": "ltr",
+  "start_url": "./?source=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#14633f",
+  "background_color": "#f6f8f3",
+  "categories": ["medical", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "หมวด", "short_name": "หมวด", "url": "./#/cats", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "กิจกรรม", "short_name": "กิจกรรม", "url": "./#/activities", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
