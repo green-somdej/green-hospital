@@ -5,7 +5,7 @@
  * - ข้อมูลจาก Google Sheet ไม่ได้เก็บที่นี่ หน้าเว็บเก็บเองใน localStorage
  * ถ้าเพิ่มหรือเปลี่ยนชื่อไฟล์ ให้เปลี่ยนเลข VERSION ด้วย
  */
-const VERSION = 'gh-v1';
+const VERSION = 'gh-v2';
 const SHELL = [
   './',
   './index.html',
@@ -14,7 +14,11 @@ const SHELL = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
-  './icons/favicon-32.png'
+  './icons/favicon-32.png',
+  './icons/pose-1.png',
+  './icons/pose-2.png',
+  './icons/pose-3.png',
+  './icons/pose-4.png'
 ];
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
