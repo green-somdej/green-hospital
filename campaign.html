@@ -578,8 +578,8 @@ footer a{color:#fff}
   $('pcDlgX').addEventListener('click', () => dlg.close());
   dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener('close', () => { if (location.hash === '#postcard') history.replaceState(null, '', location.pathname + location.search); });
-  // มาจากลิงก์ ...#postcard (เช่น แถบแคมเปญหน้าแรก) ให้เด้งป๊อปอัปทันที
-  if (location.hash === '#postcard') setTimeout(openPC, 300);
+  // เปิดหน้านี้เมื่อไรให้เด้งป๊อปอัปร่วมรณรงค์ทันที (ยกเว้นลิงก์ที่ตั้งใจไปส่วนอื่น เช่น #build #calendar)
+  if (!location.hash || location.hash === '#postcard') setTimeout(openPC, 600);
   addEventListener('hashchange', () => { if (location.hash === '#postcard') openPC(); });
 
   const fileName = () => `postcard-${C.id}-${year}.png`;

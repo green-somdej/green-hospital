@@ -1213,16 +1213,13 @@ trackVisit();
   if(sessionStorage.getItem('gh-cbar')!==key) bar.hidden=false;
   document.getElementById('cbX').addEventListener('click',()=>{ bar.hidden=true; sessionStorage.setItem('gh-cbar',key); });
 
-  /* โปสการ์ดเด้งขึ้นวันละครั้งต่อแคมเปญ */
+  /* โปสการ์ดเด้งขึ้นทุกครั้งที่เปิดหน้าเว็บ ระหว่างช่วงรณรงค์ */
   const pop=document.getElementById('cpop');
-  const today=G.today().toDateString();
-  if(localStorage.getItem('gh-cpop-'+key)===today && !qs) return;
   pop.querySelector('a').href='campaign.html'+qs+'#postcard';
   document.getElementById('cpTitle').textContent=c.icon+' '+c.name;
   document.getElementById('cpText').textContent=G.thaiDate(c.when)+' ('+G.countdownText(c)+') · '+c.slogan;
-  const close=()=>{ pop.close(); localStorage.setItem('gh-cpop-'+key,today); };
+  const close=()=>pop.close();
   document.getElementById('cpClose').addEventListener('click',close);
-  pop.addEventListener('cancel',()=>localStorage.setItem('gh-cpop-'+key,today));
   pop.addEventListener('click',e=>{ if(e.target===pop) close(); });
   /* สุ่มลายธรรมชาติและคำอวยพร แต่ละคนจะได้ไม่เหมือนกัน */
   G.drawPostcard(document.getElementById('cpCanvas'),c,{design:G.randomDesign(c).id,message:G.randomBlessing(c),pledge:c.special==='krathong'?'':'ฉันจะ'+c.actions[0]})
