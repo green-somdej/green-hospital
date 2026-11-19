@@ -1209,7 +1209,7 @@ trackVisit();
   document.getElementById('cbIc').textContent=c.icon;
   document.getElementById('cbTitle').textContent=c.name+' · '+G.countdownText(c);
   document.getElementById('cbSub').textContent=c.slogan;
-  document.getElementById('cbGo').href='campaign.html'+qs;
+  document.getElementById('cbGo').href='campaign.html'+qs+'#postcard';
   if(sessionStorage.getItem('gh-cbar')!==key) bar.hidden=false;
   document.getElementById('cbX').addEventListener('click',()=>{ bar.hidden=true; sessionStorage.setItem('gh-cbar',key); });
 
