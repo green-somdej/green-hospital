@@ -142,6 +142,15 @@ label.f{display:grid;gap:6px;font:500 .98rem var(--head)}
 .pc-preview{position:relative}
 .pc-preview canvas{width:100%;max-width:460px;height:auto;display:block;margin-inline:auto;border-radius:18px;box-shadow:0 24px 60px -24px rgba(0,0,0,.45);background:#ddd;aspect-ratio:4/5}
 .share{display:flex;gap:10px;flex-wrap:wrap}
+.lucky{display:grid;gap:10px;padding:16px;border-radius:14px;background:linear-gradient(135deg,#fff8d6,#e8f3e4);border:1px solid #efe1a0}
+.lucky .btn{width:100%;font-size:1.08rem;min-height:54px}
+.lucky p{font:500 .98rem var(--head);text-align:center}
+.lucky p b{color:var(--green)}
+.dchips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.dchips span{font-size:.8rem;padding:2px 10px;border-radius:999px;border:1px dashed #c9d6c6;color:var(--muted);background:#fff}
+.dchips span.got{border:1px solid var(--green);background:var(--green);color:#fff}
+.pc-preview canvas.flip{animation:flip .7s ease}
+@keyframes flip{0%{transform:perspective(900px) rotateY(0)}50%{transform:perspective(900px) rotateY(90deg) scale(.94)}100%{transform:perspective(900px) rotateY(0)}}
 
 /* แสตมป์ */
 .stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}
@@ -283,7 +292,7 @@ footer a{color:#fff}
       <div class="band-head">
         <span class="kicker">ขั้นที่ 1</span>
         <h2>เลือกสิ่งที่ฉันจะทำ</h2>
-        <p class="muted">เลือก 1 ข้อ ข้อความจะไปอยู่บนโปสการ์ดของคุณ</p>
+        <p class="muted">เลือก 1 ข้อ คำมั่นนี้จะไปอยู่บนโปสการ์ดของคุณ</p>
       </div>
       <div class="chips" id="actions"></div>
     </div>
@@ -295,14 +304,19 @@ footer a{color:#fff}
       <div class="band-head">
         <span class="kicker">ขั้นที่ 2</span>
         <h2>โปสการ์ดของฉัน</h2>
-        <p class="muted">ใส่ชื่อและข้อความ แล้วบันทึกรูปหรือแชร์ต่อให้เพื่อนร่วมรณรงค์ ทุกครั้งที่สร้างโปสการ์ดจะได้แสตมป์สะสม</p>
+        <p class="muted">กดสุ่มเพื่อลุ้นลายธรรมชาติและคำอวยพร ใส่ชื่อ แล้วบันทึกรูปหรือแชร์ต่อให้เพื่อน ทุกครั้งที่สร้างโปสการ์ดจะได้แสตมป์สะสม</p>
       </div>
       <div class="grid2">
         <div class="card pc-form">
+          <div class="lucky">
+            <button class="btn gold" id="luckyBtn" type="button">🎲 สุ่มโปสการ์ดอวยพร</button>
+            <p id="luckyText" aria-live="polite"></p>
+            <div class="dchips" id="dchips" aria-label="ลายที่เคยสุ่มได้"></div>
+          </div>
           <label class="f">ชื่อของคุณ (หรือชื่อเล่น)
             <input id="pcName" maxlength="40" autocomplete="nickname" placeholder="เช่น พยาบาลน้ำฝน หน่วยไตเทียม">
           </label>
-          <label class="f"><span id="pcMsgLabel">คำอธิษฐาน / คำมั่นของฉัน</span>
+          <label class="f"><span>คำอวยพร (สุ่มได้ หรือพิมพ์เองก็ได้)</span>
             <textarea id="pcMsg" maxlength="90"></textarea>
             <small>ไม่เกิน 90 ตัวอักษร ข้อมูลไม่ถูกส่งออกจากเครื่องของคุณ</small>
           </label>
@@ -406,6 +420,8 @@ footer a{color:#fff}
   /* ---------- กระทง ---------- */
   let K = { base: 'banana', flower: 'marigold', candle: true, incense: true };
   let pending; // ตัวหน่วงการวาดโปสการ์ด
+  let DESIGN = G.randomDesign(C).id; // ลายโปสการ์ดที่สุ่มได้
+  let PLEDGE = isK ? '' : 'ฉันจะ' + C.actions[0];
   function kImage(k, w = 320) {
     const c = document.createElement('canvas'); c.width = w; c.height = w * .75;
     G.drawKrathong(c.getContext('2d'), w / 2, w * .62, w / 400, k);
@@ -463,7 +479,7 @@ footer a{color:#fff}
       const wish = $('wishQuick').value.trim();
       const list = JSON.parse(localStorage.getItem(MINE) || '[]'); list.push({ k: K, wish }); localStorage.setItem(MINE, JSON.stringify(list.slice(-10)));
       addFloat(kImage(K), { mine: true, w: 130, t: 30, d: -6, b: 26, label: wish || 'กระทงของฉัน' });
-      if (wish && !$('pcMsg').value.trim()) { $('pcMsg').value = wish; drawPC(); }
+      if (wish) { $('pcMsg').value = wish; drawPC(); }
       giveStamp();
       toast('กระทงของคุณลอยไปแล้ว 🪷 ไม่สร้างขยะเลยสักชิ้น');
       $('hero').scrollIntoView({ behavior: 'smooth' });
@@ -473,23 +489,42 @@ footer a{color:#fff}
   /* ---------- คำมั่น (วันอื่น) ---------- */
   if (!isK) {
     $('actions').innerHTML = C.actions.map((a, i) => `<label class="chip"><input type="radio" name="act" value="${esc(a)}"${i ? '' : ' checked'}><span>${esc(a)}</span></label>`).join('');
-    $('actions').addEventListener('change', e => { $('pcMsg').value = 'ฉันจะ' + e.target.value; drawPC(); });
-    $('pcMsg').value = 'ฉันจะ' + C.actions[0];
-    $('pcMsgLabel').textContent = 'คำมั่นของฉัน';
-  } else {
-    $('pcMsg').placeholder = 'เช่น ขอให้แม่น้ำใสสะอาด ทุกคนสุขภาพแข็งแรง';
+    $('actions').addEventListener('change', e => { PLEDGE = 'ฉันจะ' + e.target.value; drawPC(); });
   }
 
   /* ---------- โปสการ์ด ---------- */
   function drawPC() {
     clearTimeout(pending);
-    pending = setTimeout(() => G.drawPostcard($('pc'), C, { name: $('pcName').value, message: $('pcMsg').value || (isK ? 'ลอยกระทงด้วยวัสดุธรรมชาติ รักษ์แม่น้ำ รักษ์โลก' : ''), krathong: K }), 120);
+    const pledge = isK ? `กระทง${G.BASES[K.base].name} ย่อยสลายได้ ${G.BASES[K.base].decay}` : PLEDGE;
+    pending = setTimeout(() => G.drawPostcard($('pc'), C, { design: DESIGN, pledge, name: $('pcName').value, message: $('pcMsg').value, krathong: K }), 120);
   }
   $('pcName').addEventListener('input', drawPC);
   $('pcMsg').addEventListener('input', drawPC);
   $('pcName').value = localStorage.getItem('gh-name') || '';
   $('pcName').addEventListener('change', () => localStorage.setItem('gh-name', $('pcName').value.trim()));
+
+  /* สุ่มลายธรรมชาติ + คำอวยพร และสะสมลายที่เคยได้ */
+  const pool = G.designsFor(C);
+  const seenKey = 'gh-designs-' + (isK ? 'water' : 'all');
+  function seen() { return JSON.parse(localStorage.getItem(seenKey) || '[]'); }
+  function showLuck() {
+    const s = seen(); if (!s.includes(DESIGN)) { s.push(DESIGN); localStorage.setItem(seenKey, JSON.stringify(s)); }
+    const d = pool.find(x => x.id === DESIGN);
+    $('luckyText').innerHTML = `คุณได้ลาย <b>${esc(d.name)}</b> · สะสมแล้ว ${s.filter(id => pool.some(p => p.id === id)).length}/${pool.length} ลาย`;
+    $('dchips').innerHTML = pool.map(p => `<span class="${s.includes(p.id) ? 'got' : ''}">${esc(p.name)}</span>`).join('');
+  }
+  $('pcMsg').value = G.randomBlessing(C);
+  showLuck();
   drawPC();
+  $('luckyBtn').addEventListener('click', () => {
+    const cv = $('pc');
+    cv.classList.remove('flip'); void cv.offsetWidth; cv.classList.add('flip');
+    setTimeout(() => {
+      DESIGN = G.randomDesign(C, DESIGN).id;
+      $('pcMsg').value = G.randomBlessing(C, $('pcMsg').value);
+      showLuck(); drawPC();
+    }, 300);
+  });
 
   const fileName = () => `postcard-${C.id}-${year}.png`;
   function blob() { return new Promise(r => $('pc').toBlob(r, 'image/png')); }

@@ -331,7 +331,201 @@
     await Promise.all(['700 80px Prompt', '600 40px Prompt', '500 36px "IBM Plex Sans Thai"'].map(f => document.fonts.load(f, 'ก'))).catch(() => {});
   }
 
-  /* ---------------- โปสการ์ด 1080x1350 (สัดส่วน 4:5 แชร์ได้ทุกแพลตฟอร์ม) ---------------- */
+  /* ---------------- ลายโปสการ์ดแนวธรรมชาติ ----------------
+   * water: true = มีผิวน้ำ ใช้กับลอยกระทงได้
+   * เพิ่มลายใหม่: เพิ่มรายการใน DESIGNS พร้อมฟังก์ชัน draw(ctx, W, H, r, c)
+   */
+  const HZ = 880; // เส้นขอบฟ้า / ผิวน้ำ
+  function band(ctx, y0, y1, stops) {
+    const g = ctx.createLinearGradient(0, y0, 0, y1);
+    stops.forEach((s, i) => g.addColorStop(i / (stops.length - 1), s));
+    ctx.fillStyle = g; ctx.fillRect(0, y0, 1080, y1 - y0);
+  }
+  function waves(ctx, y0, y1, color, step = 34) {
+    ctx.strokeStyle = color; ctx.lineWidth = 3;
+    for (let y = y0; y < y1; y += step) { ctx.beginPath(); for (let x = 0; x <= 1080; x += 20) ctx.lineTo(x, y + Math.sin(x / 40 + y) * 5); ctx.stroke(); }
+  }
+  function glow(ctx, x, y, r, color) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, color); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+  function ridge(ctx, base, amp, freq, phase, color) {
+    ctx.beginPath(); ctx.moveTo(0, 1350);
+    for (let x = 0; x <= 1080; x += 12) ctx.lineTo(x, base - Math.abs(Math.sin(x / freq + phase)) * amp - Math.sin(x / (freq * 2.7)) * amp * 0.4);
+    ctx.lineTo(1080, 1350); ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+  }
+  function stars(ctx, r, n, maxY) {
+    for (let i = 0; i < n; i++) { ctx.globalAlpha = 0.3 + r() * 0.7; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(r() * 1080, r() * maxY, r() * 2.4 + 0.6, 0, Math.PI * 2); ctx.fill(); }
+    ctx.globalAlpha = 1;
+  }
+  function lotusFlower(ctx, x, y, s) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+    ctx.beginPath(); ctx.ellipse(0, 6, 46, 12, 0, 0, Math.PI * 2); ctx.fillStyle = '#3f7d4a'; ctx.fill();
+    for (let i = -2; i <= 2; i++) {
+      ctx.save(); ctx.rotate(i * 0.38);
+      ctx.beginPath(); ctx.ellipse(0, -22, 11, 26, 0, 0, Math.PI * 2);
+      ctx.fillStyle = i % 2 ? '#f7b6c8' : '#ec8fac'; ctx.fill(); ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  const DESIGNS = [
+    {
+      id: 'moon', name: 'คืนจันทร์เต็มดวง', water: true, draw(ctx, W, H, r) {
+        band(ctx, 0, HZ, ['#081634', '#1b3a78', '#2b5aa0']);
+        stars(ctx, r, 90, 760);
+        glow(ctx, 860, 250, 260, 'rgba(255,244,204,.45)');
+        ctx.beginPath(); ctx.arc(860, 250, 92, 0, Math.PI * 2); ctx.fillStyle = '#fff4cc'; ctx.fill();
+        band(ctx, HZ, H, ['#173f78', '#06162e']);
+        ctx.fillStyle = 'rgba(255,244,204,.2)';
+        for (let i = 0; i < 9; i++) ctx.fillRect(800 + r() * 30 - i * 4, HZ + 20 + i * 22, 110 - i * 8, 4);
+        waves(ctx, HZ + 50, HZ + 180, 'rgba(255,255,255,.16)');
+      }
+    },
+    {
+      id: 'lotus', name: 'บึงบัวยามเย็น', water: true, draw(ctx, W, H, r) {
+        band(ctx, 0, HZ, ['#2a1a4a', '#8c4a86', '#e9867a', '#ffc98f']);
+        glow(ctx, 230, HZ - 20, 220, 'rgba(255,214,150,.6)');
+        ctx.beginPath(); ctx.arc(230, HZ - 10, 78, Math.PI, 0); ctx.fillStyle = '#ffe2a8'; ctx.fill();
+        ridge(ctx, HZ, 40, 160, 1, '#5a3566');
+        band(ctx, HZ, H, ['#7a4a78', '#2a1a3e']);
+        waves(ctx, HZ + 40, HZ + 200, 'rgba(255,220,200,.16)');
+        [[120, 960, 1.4], [930, 990, 1.6], [300, 1030, 0.9], [820, 930, 0.8], [60, 1320, 1.6], [1010, 1320, 1.3]].forEach(([x, y, s]) => lotusFlower(ctx, x, y, s));
+      }
+    },
+    {
+      id: 'firefly', name: 'หิ่งห้อยริมน้ำ', water: true, draw(ctx, W, H, r) {
+        band(ctx, 0, HZ, ['#041a1a', '#0c3a36', '#1b5a4c']);
+        stars(ctx, r, 40, 500);
+        ridge(ctx, HZ - 120, 120, 90, 0.4, '#082a26');
+        ridge(ctx, HZ, 90, 60, 2, '#03150f');
+        band(ctx, HZ, H, ['#0a2f2a', '#020d0b']);
+        waves(ctx, HZ + 40, HZ + 200, 'rgba(216,255,122,.08)');
+        for (let i = 0; i < 70; i++) {
+          const x = r() * W, y = 320 + r() * 760, s = 6 + r() * 10;
+          glow(ctx, x, y, s * 3, 'rgba(216,255,122,.55)');
+          ctx.beginPath(); ctx.arc(x, y, s / 4, 0, Math.PI * 2); ctx.fillStyle = '#f4ffc2'; ctx.fill();
+        }
+      }
+    },
+    {
+      id: 'sunrise', name: 'รุ่งอรุณริมน้ำ', water: true, draw(ctx, W, H, r) {
+        band(ctx, 0, HZ, ['#3b6fb6', '#b98bb3', '#f5a26b', '#ffd98e']);
+        glow(ctx, 800, HZ - 40, 330, 'rgba(255,240,184,.75)');
+        ctx.beginPath(); ctx.arc(800, HZ - 30, 110, 0, Math.PI * 2); ctx.fillStyle = '#fff3c4'; ctx.fill();
+        ridge(ctx, HZ - 40, 150, 140, 0.2, 'rgba(91,74,122,.85)');
+        ridge(ctx, HZ, 80, 90, 1.7, '#3d3460');
+        band(ctx, HZ, H, ['#e8956a', '#7a5a86', '#2c2550']);
+        ctx.fillStyle = 'rgba(255,243,196,.45)';
+        for (let i = 0; i < 12; i++) ctx.fillRect(730 + r() * 40 - i * 3, HZ + 18 + i * 18, 140 - i * 9, 5);
+        waves(ctx, HZ + 40, HZ + 200, 'rgba(255,255,255,.14)');
+        ctx.strokeStyle = '#2c2550'; ctx.lineWidth = 4;
+        [[260, 300], [320, 270], [370, 320]].forEach(([x, y]) => { ctx.beginPath(); ctx.moveTo(x - 20, y); ctx.quadraticCurveTo(x - 8, y - 12, x, y); ctx.quadraticCurveTo(x + 8, y - 12, x + 20, y); ctx.stroke(); });
+      }
+    },
+    {
+      id: 'forest', name: 'ขุนเขาและป่าเขียว', water: true, draw(ctx, W, H, r) {
+        band(ctx, 0, HZ, ['#5aa6c9', '#a9dbe8', '#e9f7f0']);
+        ridge(ctx, HZ - 200, 160, 170, 0.8, '#8fbfa0');
+        ridge(ctx, HZ - 90, 130, 110, 2.3, '#4f8f62');
+        ctx.fillStyle = '#245a3a';
+        for (let x = -20; x < W + 40; x += 46) {
+          const h = 90 + r() * 90, y = HZ + 4;
+          ctx.beginPath(); ctx.moveTo(x - 26, y); ctx.lineTo(x, y - h); ctx.lineTo(x + 26, y); ctx.closePath(); ctx.fill();
+        }
+        band(ctx, HZ, H, ['#3f8fa8', '#1f5068', '#0d2f40']);
+        waves(ctx, HZ + 40, HZ + 200, 'rgba(255,255,255,.18)');
+      }
+    },
+    {
+      id: 'meadow', name: 'ทุ่งดอกไม้', water: false, draw(ctx, W, H, r) {
+        band(ctx, 0, HZ, ['#4aa3df', '#9fd6f5', '#e8f6fb']);
+        ctx.fillStyle = 'rgba(255,255,255,.9)';
+        [[200, 330], [760, 420], [930, 300]].forEach(([x, y]) => { [[0, 0, 40], [40, -14, 52], [90, 0, 40], [44, 12, 44]].forEach(([dx, dy, rr]) => { ctx.beginPath(); ctx.arc(x + dx, y + dy, rr, 0, Math.PI * 2); ctx.fill(); }); });
+        ridge(ctx, HZ - 60, 90, 200, 0.5, '#9fd27a');
+        ridge(ctx, HZ + 60, 70, 150, 2, '#6cb552');
+        band(ctx, HZ + 120, H, ['#5aa346', '#3f7d33']);
+        const cols = ['#ffd23f', '#ff6b8b', '#ffffff', '#b38cff', '#ff9f43'];
+        for (let i = 0; i < 160; i++) {
+          const x = r() * W, y = HZ - 20 + r() * (H - HZ + 20), s = 4 + (y - HZ) / 60 + r() * 3;
+          ctx.beginPath(); ctx.arc(x, y, s, 0, Math.PI * 2); ctx.fillStyle = cols[i % cols.length]; ctx.fill();
+        }
+      }
+    },
+    {
+      id: 'ocean', name: 'ทะเลยามสาย', water: false, draw(ctx, W, H, r) {
+        band(ctx, 0, HZ, ['#2f8fd6', '#7cc8ef', '#d4f0fa']);
+        glow(ctx, 900, 200, 200, 'rgba(255,250,210,.7)');
+        ctx.beginPath(); ctx.arc(900, 200, 70, 0, Math.PI * 2); ctx.fillStyle = '#fffbe0'; ctx.fill();
+        band(ctx, HZ - 40, H, ['#1c8fc4', '#13679a', '#0b3f66']);
+        ctx.fillStyle = 'rgba(255,255,255,.5)';
+        for (let y = HZ; y < H; y += 46) { ctx.beginPath(); for (let x = 0; x <= W; x += 10) ctx.lineTo(x, y + Math.sin(x / 50 + y / 30) * 8); ctx.lineTo(W, y + 4); ctx.lineTo(0, y + 4); ctx.fill(); }
+        ctx.strokeStyle = '#1d3b52'; ctx.lineWidth = 4;
+        [[180, 260], [250, 230], [620, 300]].forEach(([x, y]) => { ctx.beginPath(); ctx.moveTo(x - 22, y); ctx.quadraticCurveTo(x - 9, y - 14, x, y); ctx.quadraticCurveTo(x + 9, y - 14, x + 22, y); ctx.stroke(); });
+      }
+    },
+    {
+      id: 'rain', name: 'ฝนพรำกับสายรุ้ง', water: false, draw(ctx, W, H, r) {
+        band(ctx, 0, HZ, ['#4f6478', '#8aa3b8', '#c9d8e2']);
+        ['#ff6b6b', '#ffa94d', '#ffe066', '#69db7c', '#4dabf7', '#9775fa'].forEach((col, i) => {
+          ctx.beginPath(); ctx.arc(540, HZ + 40, 560 - i * 26, Math.PI, 0); ctx.strokeStyle = col; ctx.globalAlpha = .45; ctx.lineWidth = 26; ctx.stroke();
+        });
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 2;
+        for (let i = 0; i < 140; i++) { const x = r() * W, y = r() * H; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 8, y + 30); ctx.stroke(); }
+        ridge(ctx, HZ, 60, 130, 0.9, '#5f9a6a');
+        band(ctx, HZ + 50, H, ['#4f8a5a', '#2f5a3c']);
+        ctx.beginPath(); ctx.ellipse(300, 1010, 160, 26, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(180,215,235,.6)'; ctx.fill();
+      }
+    },
+    {
+      id: 'theme', name: 'สีประจำวันรณรงค์', water: false, draw(ctx, W, H, r, c) {
+        const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, c.colors[0]); g.addColorStop(1, c.colors[1]);
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = 'rgba(255,255,255,.05)';
+        for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.arc(r() * W, r() * H, 40 + r() * 160, 0, Math.PI * 2); ctx.fill(); }
+        ctx.fillStyle = 'rgba(255,255,255,.18)';
+        for (let i = 0; i < 26; i++) {
+          ctx.save(); ctx.translate(r() * W, r() * H); ctx.rotate(r() * Math.PI * 2);
+          ctx.beginPath(); ctx.ellipse(0, 0, 10, 24, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        }
+      }
+    }
+  ];
+
+  /* ---------------- คำอวยพร (สุ่ม) ---------------- */
+  const BLESSINGS = {
+    common: [
+      'ขอให้ชีวิตงอกงาม เหมือนต้นไม้ที่ได้รับแสงแดด',
+      'ขอให้ทุกลมหายใจสดชื่น เหมือนอากาศในป่าใหญ่',
+      'ขอให้ใจเย็นสบาย ไหลลื่นเหมือนสายน้ำ',
+      'ขอให้ความดีงามเบ่งบาน เหมือนดอกไม้ในทุ่ง',
+      'ขอให้สุขภาพแข็งแรง ดั่งต้นไม้ใหญ่ที่หยั่งรากลึก',
+      'ดูแลโลกวันนี้ ก็คือดูแลสุขภาพของเราทุกคน',
+      'ขอให้โลกใบนี้สดใส ส่งต่อถึงลูกหลาน',
+      'ขอให้ทุกวันสดชื่น เหมือนหยดน้ำค้างยามเช้า'
+    ],
+    loykrathong: [
+      'ขอให้สายน้ำใสสะอาด ชีวิตชุ่มชื่นตลอดปี',
+      'ขอให้ความทุกข์ลอยไป ความสุขไหลมาเหมือนสายน้ำ',
+      'ขอบคุณแม่น้ำที่หล่อเลี้ยงทุกชีวิต',
+      'ลอยความทุกข์ ไม่ลอยขยะ',
+      'ขอให้แสงจันทร์นำทางสู่สิ่งดีงาม',
+      'ขอให้ครอบครัวอบอุ่น สุขภาพแข็งแรงทุกคน'
+    ]
+  };
+  function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+  function designsFor(c) { return DESIGNS.filter(d => c.special === 'krathong' ? d.water : true); }
+  function randomDesign(c, not) { const l = designsFor(c).filter(d => d.id !== not); return pick(l.length ? l : designsFor(c)); }
+  function randomBlessing(c, not) {
+    const l = (BLESSINGS[c.id] || []).concat(BLESSINGS.common).filter(b => b !== not);
+    return pick(l);
+  }
+
+  /* ---------------- โปสการ์ด 1080x1350 (สัดส่วน 4:5 แชร์ได้ทุกแพลตฟอร์ม) ----------------
+   * o = { design, message, pledge, name, krathong }
+   */
   async function drawPostcard(canvas, c, o = {}) {
     await fontsReady();
     const img = await loadLogo();
@@ -339,52 +533,53 @@
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
     const head = 'Prompt, "IBM Plex Sans Thai", sans-serif', body = '"IBM Plex Sans Thai", sans-serif';
-    const r = rand(7);
+    const ok = designsFor(c);
+    const d = ok.find(x => x.id === o.design) || ok[0];
+    const r = rand(7 + d.id.length * 13);
+
+    ctx.save(); d.draw(ctx, W, H, r, c); ctx.restore();
+    // ไล่เงาด้านบนให้อ่านหัวข้อได้ทุกลาย
+    const shade = ctx.createLinearGradient(0, 0, 0, 520);
+    shade.addColorStop(0, 'rgba(0,0,0,.42)'); shade.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = shade; ctx.fillRect(0, 0, W, 520);
 
     if (c.special === 'krathong') {
-      const sky = ctx.createLinearGradient(0, 0, 0, 900);
-      sky.addColorStop(0, '#081634'); sky.addColorStop(1, '#2b5aa0');
-      ctx.fillStyle = sky; ctx.fillRect(0, 0, W, 900);
-      for (let i = 0; i < 90; i++) { ctx.globalAlpha = 0.3 + r() * 0.7; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(r() * W, r() * 760, r() * 2.4 + 0.6, 0, Math.PI * 2); ctx.fill(); }
-      ctx.globalAlpha = 1;
-      const mg = ctx.createRadialGradient(860, 250, 60, 860, 250, 260); mg.addColorStop(0, 'rgba(255,244,204,.45)'); mg.addColorStop(1, 'rgba(255,244,204,0)');
-      ctx.fillStyle = mg; ctx.fillRect(560, 0, 520, 560);
-      ctx.beginPath(); ctx.arc(860, 250, 92, 0, Math.PI * 2); ctx.fillStyle = '#fff4cc'; ctx.fill();
-      const water = ctx.createLinearGradient(0, 900, 0, H); water.addColorStop(0, '#173f78'); water.addColorStop(1, '#06162e');
-      ctx.fillStyle = water; ctx.fillRect(0, 900, W, H - 900);
-      ctx.fillStyle = 'rgba(255,244,204,.18)';
-      for (let i = 0; i < 9; i++) ctx.fillRect(860 - 70 + r() * 40 - i * 4, 920 + i * 22, 100 - i * 6, 4);
-      ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 3;
-      for (let y = 940; y < 1060; y += 34) { ctx.beginPath(); for (let x = 0; x <= W; x += 20) ctx.lineTo(x, y + Math.sin(x / 40 + y) * 5); ctx.stroke(); }
-      const rg = ctx.createRadialGradient(540, 960, 10, 540, 960, 300); rg.addColorStop(0, 'rgba(255,200,100,.35)'); rg.addColorStop(1, 'rgba(255,200,100,0)');
-      ctx.fillStyle = rg; ctx.fillRect(240, 860, 600, 200);
+      glow(ctx, 540, 960, 300, 'rgba(255,200,100,.35)');
       drawKrathong(ctx, 540, 925, 1.75, o.krathong || { base: 'banana', flower: 'marigold', candle: true, incense: true });
     } else {
-      const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, c.colors[0]); g.addColorStop(1, c.colors[1]);
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = 'rgba(255,255,255,.05)';
-      for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.arc(r() * W, r() * H, 40 + r() * 160, 0, Math.PI * 2); ctx.fill(); }
-      ctx.beginPath(); ctx.arc(540, 560, 230, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.fill();
-      ctx.beginPath(); ctx.arc(540, 560, 190, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fill();
-      ctx.font = '210px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
-      ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.icon, 540, 575);
+      ctx.beginPath(); ctx.arc(540, 690, 200, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(540, 690, 165, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,.28)'; ctx.fill();
+      ctx.font = '190px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(c.icon, 540, 700);
     }
 
     // หัวข้อ
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-    ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.font = `500 34px ${body}`;
+    ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 12;
+    ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.font = `500 34px ${body}`;
     ctx.fillText(thaiDate(c.when), 80, 110);
     ctx.fillStyle = '#fff'; ctx.font = `700 ${c.name.length > 22 ? 64 : 80}px ${head}`;
-    wrap(ctx, c.name, 920, 2).forEach((l, i) => ctx.fillText(l, 80, 200 + i * 86));
+    const tLines = wrap(ctx, c.name, 920, 2);
+    tLines.forEach((l, i) => ctx.fillText(l, 80, 200 + i * 86));
     ctx.fillStyle = '#ffe9a8'; ctx.font = `600 40px ${head}`;
-    const tl = wrap(ctx, c.name, 920, 2).length;
-    wrap(ctx, c.slogan, 920, 2).forEach((l, i) => ctx.fillText(l, 80, 200 + tl * 86 + i * 52));
+    const sLines = wrap(ctx, c.slogan, 920, 2);
+    sLines.forEach((l, i) => ctx.fillText(l, 80, 200 + tLines.length * 86 + i * 52));
+    ctx.shadowColor = 'transparent';
 
-    // การ์ดข้อความ
+    // ป้ายคำมั่น
+    if (o.pledge) {
+      ctx.font = `600 30px ${head}`;
+      const t = '✓ ' + o.pledge, tw = Math.min(ctx.measureText(t).width, 880);
+      const py = 200 + tLines.length * 86 + (sLines.length - 1) * 52 + 34;
+      roundRect(ctx, 80, py, tw + 44, 54, 27); ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.fill();
+      ctx.fillStyle = '#14633f'; ctx.fillText(t, 102, py + 38, 880);
+    }
+
+    // การ์ดคำอวยพร
     const cy = 1070, ch = 220;
     ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 8;
     roundRect(ctx, 70, cy, 940, ch, 28); ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.fill();
-    ctx.shadowColor = 'transparent';
+    ctx.shadowColor = 'transparent'; ctx.shadowOffsetY = 0;
     ctx.fillStyle = '#12291f'; ctx.font = `500 36px ${body}`;
     const msg = (o.message || '').trim() || c.actions[0];
     wrap(ctx, `“${msg}”`, 860, 2).forEach((l, i) => ctx.fillText(l, 110, cy + 66 + i * 50));
@@ -397,5 +592,5 @@
     return canvas;
   }
 
-  window.GHCampaign = { CAMPAIGNS, BASES, FLOWERS, today, upcoming, active, featured, thaiDate, countdownText, drawKrathong, drawPostcard, diffDays };
+  window.GHCampaign = { CAMPAIGNS, BASES, FLOWERS, DESIGNS, today, upcoming, active, featured, thaiDate, countdownText, drawKrathong, drawPostcard, diffDays, designsFor, randomDesign, randomBlessing };
 })();

@@ -358,7 +358,8 @@ footer p{font-size:.92rem;opacity:.95}
 .cbar .x:hover{background:rgba(255,255,255,.15)}
 #cpop{width:min(380px,calc(100vw - 32px));margin:auto;padding:0;border:0;border-radius:20px;background:var(--surface);box-shadow:0 30px 80px -20px rgba(0,0,0,.55);overflow:hidden}
 #cpop::backdrop{background:rgba(8,20,40,.55)}
-#cpop canvas{display:block;width:100%;height:auto;aspect-ratio:4/5;background:#0b1f4a}
+#cpop{max-height:calc(100dvh - 24px);overflow:auto}
+#cpop canvas{display:block;width:auto;max-width:100%;height:auto;max-height:calc(100dvh - 230px);aspect-ratio:4/5;margin-inline:auto;background:#0b1f4a}
 #cpop .cp-body{padding:16px 18px 18px;display:grid;gap:10px}
 #cpop h2{font-size:1.15rem}
 #cpop .cp-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
@@ -409,7 +410,7 @@ footer p{font-size:.92rem;opacity:.95}
     <p class="muted" id="cpText"></p>
     <div class="cp-actions">
       <button class="btn sm" type="button" id="cpClose">ไว้ทีหลัง</button>
-      <a class="btn sm primary" href="campaign.html#postcard">สร้างโปสการ์ดของฉัน</a>
+      <a class="btn sm primary" href="campaign.html#postcard">🎲 สุ่มโปสการ์ดของฉัน</a>
     </div>
   </div>
 </dialog>
@@ -1223,7 +1224,8 @@ trackVisit();
   document.getElementById('cpClose').addEventListener('click',close);
   pop.addEventListener('cancel',()=>localStorage.setItem('gh-cpop-'+key,today));
   pop.addEventListener('click',e=>{ if(e.target===pop) close(); });
-  G.drawPostcard(document.getElementById('cpCanvas'),c,{message:c.special==='krathong'?'ลอยกระทงด้วยวัสดุธรรมชาติ รักษ์แม่น้ำ รักษ์โลก':''})
+  /* สุ่มลายธรรมชาติและคำอวยพร แต่ละคนจะได้ไม่เหมือนกัน */
+  G.drawPostcard(document.getElementById('cpCanvas'),c,{design:G.randomDesign(c).id,message:G.randomBlessing(c),pledge:c.special==='krathong'?'':'ฉันจะ'+c.actions[0]})
     .then(()=>setTimeout(()=>{ if(!document.querySelector('dialog[open]')) pop.showModal(); },1200));
 })();
 </script>
