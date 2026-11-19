@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>รณรงค์รักษ์โลก | Green Hospital</title>
+<meta name="description" content="ร่วมรณรงค์วันสิ่งแวดล้อม ลอยกระทงด้วยวัสดุธรรมชาติที่ย่อยสลายได้ และสร้างโปสการ์ดของคุณเพื่อแชร์ต่อ">
+<meta name="theme-color" content="#14633f">
+<meta property="og:title" content="ลอยกระทงรักษ์โลก | Green Hospital">
+<meta property="og:description" content="ประดิษฐ์กระทงย่อยสลายได้ ลอยกระทงออนไลน์ และสร้างโปสการ์ดของคุณ">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#12291f;--muted:#4a5f55;--bg:#f6f8f3;--surface:#fff;--line:#dbe4da;
+  --green:#14633f;--green-dark:#0c4a2e;--tint:#e8f3e4;--warn:#a4231b;
+  --c1:#0b1f4a;--c2:#2b5aa0;
+  --head:'Prompt','IBM Plex Sans Thai',sans-serif;--body:'IBM Plex Sans Thai',system-ui,sans-serif;
+  --gutter:clamp(16px,4vw,48px);--radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.7 var(--body)}
+h1,h2,h3,p,ul,ol{margin:0;padding:0}
+ul,ol{list-style:none}
+h1,h2,h3{font-family:var(--head);font-weight:600;line-height:1.3;text-wrap:balance}
+h2{font-size:clamp(1.4rem,2.6vw,1.9rem)}
+a{color:var(--green)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid #0b6bcb;outline-offset:2px;border-radius:4px}
+.wrap{width:100%;max-width:1180px;margin-inline:auto;padding-inline:var(--gutter)}
+.muted{color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:8px 20px;border-radius:12px;border:1.5px solid var(--green);background:var(--surface);color:var(--green);font:500 1rem var(--body);text-decoration:none;transition:background .15s,color .15s,transform .15s}
+.btn:hover{background:var(--tint)}
+.btn.primary{background:var(--green);color:#fff}
+.btn.primary:hover{background:var(--green-dark)}
+.btn.gold{background:#f6d860;border-color:#f6d860;color:#3d3200;font-weight:600}
+.btn.gold:hover{background:#ffe57a}
+.btn.ghost{background:transparent;border-color:rgba(255,255,255,.7);color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.12)}
+.btn.line{background:#06c755;border-color:#06c755;color:#fff}
+
+/* แถบบน */
+.top{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:62px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--green-dark);font:700 1.1rem var(--head)}
+.brand img{width:40px;height:40px}
+.top nav{display:flex;gap:4px}
+.top nav a{display:flex;align-items:center;min-height:42px;padding:4px 14px;border-radius:10px;text-decoration:none;color:var(--ink);font:500 .98rem var(--head)}
+.top nav a:hover{background:var(--tint)}
+.top nav a[aria-current]{background:var(--green);color:#fff}
+
+.preview-note{background:#fff4c2;color:#5a4500;font-size:.92rem}
+.preview-note .wrap{padding-block:8px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* หน้าปก */
+.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(160deg,var(--c1),var(--c2));isolation:isolate}
+.hero .wrap{position:relative;z-index:2;padding-block:clamp(40px,8vw,96px) clamp(150px,18vw,200px);display:grid;gap:18px;max-width:1180px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;width:fit-content;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:4px 14px;border-radius:999px;font:500 .92rem var(--head)}
+.pulse{width:9px;height:9px;border-radius:50%;background:#ffcf4a;box-shadow:0 0 0 0 rgba(255,207,74,.7);animation:pulse 1.8s infinite}
+@keyframes pulse{to{box-shadow:0 0 0 12px rgba(255,207,74,0)}}
+.hero h1{font-size:clamp(2.4rem,7vw,4.6rem);font-weight:700;line-height:1.08}
+.hero h1 .ic{display:inline-block;margin-right:.15em}
+.slogan{font:500 clamp(1.1rem,2.4vw,1.5rem) var(--head);color:#ffe9a8;max-width:34em}
+.hero .date{opacity:.85}
+.count{display:flex;gap:10px;flex-wrap:wrap}
+.count div{min-width:84px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:8px 12px;text-align:center;backdrop-filter:blur(4px)}
+.count b{display:block;font:700 2rem/1.1 var(--head)}
+.count span{font-size:.85rem;opacity:.85}
+.count .today{font:600 1.4rem var(--head);padding:14px 20px}
+.hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.stars{position:absolute;inset:0;z-index:0;background-image:radial-gradient(2px 2px at 20% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 70% 20%,#fff,transparent),radial-gradient(2px 2px at 40% 70%,#fff8,transparent),radial-gradient(1.5px 1.5px at 85% 55%,#fff,transparent),radial-gradient(1px 1px at 10% 80%,#fff,transparent),radial-gradient(1.5px 1.5px at 55% 45%,#fffa,transparent);background-size:420px 300px;opacity:.7}
+.moon{position:absolute;z-index:0;right:8%;top:12%;width:clamp(80px,12vw,150px);aspect-ratio:1;border-radius:50%;background:#fff4cc;box-shadow:0 0 80px 30px rgba(255,244,204,.35)}
+.big-ic{position:absolute;z-index:0;right:6%;top:50%;transform:translateY(-60%);font-size:clamp(120px,22vw,260px);opacity:.9;filter:drop-shadow(0 20px 40px rgba(0,0,0,.25))}
+.river{position:absolute;left:0;right:0;bottom:0;height:clamp(130px,16vw,180px);z-index:1;overflow:hidden;background:linear-gradient(180deg,rgba(23,63,120,.0),rgba(10,33,64,.85) 30%,#06162e)}
+.river::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 22px,rgba(255,255,255,.08) 22px 24px);animation:shimmer 6s linear infinite}
+@keyframes shimmer{to{background-position:0 48px}}
+.float{position:absolute;bottom:22%;left:-160px;width:var(--w,110px);animation:drift var(--t,40s) linear infinite,bob 3.2s ease-in-out infinite alternate;animation-delay:var(--d,0s),0s}
+.float img{width:100%;display:block;filter:drop-shadow(0 0 18px rgba(255,190,90,.55))}
+.float figcaption{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis;background:rgba(255,255,255,.92);color:var(--ink);font-size:.82rem;padding:2px 10px;border-radius:999px}
+.float.mine{z-index:3}
+@keyframes drift{to{left:calc(100% + 160px)}}
+@keyframes bob{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-6px) rotate(2deg)}}
+.hero.generic .river{display:none}
+.hero.generic .wrap{padding-bottom:clamp(48px,8vw,96px)}
+
+/* ส่วนเนื้อหา */
+section.band{padding-block:clamp(44px,7vw,80px)}
+section.band.white{background:var(--surface)}
+.band-head{display:grid;gap:6px;margin-bottom:26px;max-width:46em}
+.band-head .kicker{font:600 .9rem var(--head);color:var(--green);letter-spacing:.02em}
+.grid2{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:start}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(18px,3vw,28px)}
+
+/* ประดิษฐ์กระทง */
+fieldset{border:0;margin:0 0 18px;padding:0}
+legend{font:600 1.02rem var(--head);margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.chip span{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:6px 16px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font-weight:500;transition:.15s}
+.chip input:checked+span{border-color:var(--green);background:var(--tint);color:var(--green-dark)}
+.chip input:focus-visible+span{outline:3px solid #0b6bcb;outline-offset:2px}
+.chip.bad span{border-style:dashed;color:#7a2a24}
+.chip.bad input:checked+span{border-color:var(--warn);background:#fde8e6;color:var(--warn)}
+.stage{position:relative;border-radius:var(--radius);background:linear-gradient(180deg,#0b1f4a 0 62%,#173f78 62%,#06162e);overflow:hidden;aspect-ratio:4/3}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%}
+.stage .badge{position:absolute;left:14px;top:14px;background:rgba(255,255,255,.94);border-radius:12px;padding:6px 12px;font-size:.92rem;max-width:calc(100% - 28px)}
+.stage .badge b{color:var(--green)}
+.warnbox{margin-top:12px;padding:12px 14px;border-radius:12px;background:#fde8e6;color:#7a2a24;border:1px solid #f3c1bb;font-size:.95rem}
+.okbox{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--tint);color:var(--green-dark);font-size:.95rem}
+.builder-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+/* เวลาย่อยสลาย */
+.decay{display:grid;gap:14px}
+.decay li{display:grid;grid-template-columns:150px 1fr 96px;gap:12px;align-items:center}
+.decay .bar{height:18px;border-radius:999px;background:var(--tint);overflow:hidden}
+.decay .bar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--green);transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
+.decay li.bad .bar i{background:var(--warn)}
+.decay li.bad b{color:var(--warn)}
+.decay b{font:600 1rem var(--head);text-align:right}
+@media(max-width:560px){.decay li{grid-template-columns:1fr 80px}.decay .bar{grid-column:1/-1;grid-row:2}}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:22px}
+.tips li{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 48px;position:relative}
+.tips li::before{content:"✓";position:absolute;left:14px;top:13px;width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:.85rem;font-weight:700}
+
+/* โปสการ์ด */
+.pc-form{display:grid;gap:14px}
+label.f{display:grid;gap:6px;font:500 .98rem var(--head)}
+.f input,.f textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;background:#fff;font:400 1rem var(--body)}
+.f textarea{min-height:92px;resize:vertical}
+.f input:focus,.f textarea:focus{border-color:var(--green);outline:none;box-shadow:0 0 0 3px rgba(20,99,63,.15)}
+.f small{font:400 .85rem var(--body);color:var(--muted)}
+.pc-preview{position:relative}
+.pc-preview canvas{width:100%;max-width:460px;height:auto;display:block;margin-inline:auto;border-radius:18px;box-shadow:0 24px 60px -24px rgba(0,0,0,.45);background:#ddd;aspect-ratio:4/5}
+.share{display:flex;gap:10px;flex-wrap:wrap}
+
+/* แสตมป์ */
+.stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}
+.stamp{position:relative;display:grid;justify-items:center;gap:4px;padding:14px 8px 10px;border:2px dashed var(--line);border-radius:14px;text-align:center;font-size:.8rem;line-height:1.35;color:var(--muted);background:#fff}
+.stamp .e{font-size:2.1rem;filter:grayscale(1);opacity:.35}
+.stamp.got{border:2px solid var(--green);background:var(--tint);color:var(--green-dark)}
+.stamp.got .e{filter:none;opacity:1}
+.stamp.got::after{content:"สะสมแล้ว";position:absolute;top:6px;right:-6px;transform:rotate(12deg);background:#d93a2b;color:#fff;font:600 .68rem var(--head);padding:1px 8px;border-radius:6px}
+.stamp.now{box-shadow:0 0 0 3px #f6d860}
+.progress{display:flex;align-items:center;gap:12px;margin-bottom:18px;font:500 1rem var(--head)}
+.progress .bar{flex:1;max-width:360px;height:12px;background:var(--tint);border-radius:999px;overflow:hidden}
+.progress .bar i{display:block;height:100%;background:var(--green);border-radius:inherit;transition:width .8s}
+
+/* ปฏิทิน */
+.cal{display:grid;gap:10px}
+.cal li{display:grid;grid-template-columns:56px 1fr auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.cal .e{font-size:1.9rem;text-align:center}
+.cal b{font:600 1rem var(--head);display:block}
+.cal .when{font-size:.9rem;color:var(--muted)}
+.cal .left{font:600 .9rem var(--head);color:var(--green);white-space:nowrap;text-align:right}
+.cal li.on{border-color:var(--green);box-shadow:0 0 0 2px var(--tint)}
+.cal a{font-size:.85rem}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;background:var(--green-dark);color:#fff;padding:12px 20px;border-radius:12px;z-index:90;transition:.25s;pointer-events:none;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+footer{background:var(--green-dark);color:#dfeee4;padding-block:28px;font-size:.92rem}
+footer a{color:#fff}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="icons/icon-192.png" alt="" width="40" height="40"><span>Green Hospital</span></a>
+    <nav aria-label="เมนูหลัก">
+      <a href="index.html">หน้าแรก</a>
+      <a href="campaign.html" aria-current="page">รณรงค์</a>
+    </nav>
+  </div>
+</header>
+
+<div class="preview-note" id="previewNote" hidden><div class="wrap"><span id="previewText"></span><a href="campaign.html">กลับไปแคมเปญตามวันจริง</a></div></div>
+
+<main>
+  <section class="hero" id="hero">
+    <div class="stars" aria-hidden="true"></div>
+    <div class="moon" id="moon" aria-hidden="true"></div>
+    <div class="big-ic" id="bigIc" aria-hidden="true" hidden></div>
+    <div class="wrap">
+      <span class="eyebrow"><span class="pulse" aria-hidden="true"></span><span id="heroTag">แคมเปญตอนนี้</span></span>
+      <h1 id="heroTitle"></h1>
+      <p class="slogan" id="heroSlogan"></p>
+      <p class="date" id="heroDate"></p>
+      <div class="count" id="count" aria-live="polite"></div>
+      <div class="cta">
+        <a class="btn gold" href="#postcard">สร้างโปสการ์ดของฉัน</a>
+        <a class="btn ghost" href="#build" id="ctaBuild">ประดิษฐ์กระทงย่อยสลายได้</a>
+      </div>
+    </div>
+    <div class="river" id="river" aria-hidden="true"></div>
+  </section>
+
+  <!-- ===== ประดิษฐ์กระทง (เฉพาะลอยกระทง) ===== -->
+  <section class="band white" id="build" data-only="krathong">
+    <div class="wrap">
+      <div class="band-head">
+        <span class="kicker">ขั้นที่ 1</span>
+        <h2>ประดิษฐ์กระทงของคุณ</h2>
+        <p class="muted">เลือกวัสดุจากธรรมชาติ แล้วกด “ลอยกระทง” กระทงของคุณจะลอยไปในแม่น้ำด้านบนโดยไม่สร้างขยะสักชิ้น</p>
+      </div>
+      <div class="grid2">
+        <form id="builder" onsubmit="return false">
+          <fieldset><legend>ฐานกระทง</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="base" value="banana" checked><span>🍌 หยวกกล้วย</span></label>
+              <label class="chip"><input type="radio" name="base" value="bread"><span>🍞 ขนมปัง</span></label>
+              <label class="chip"><input type="radio" name="base" value="cassava"><span>🌾 แป้งมันสำปะหลัง</span></label>
+              <label class="chip bad"><input type="radio" name="base" value="foam"><span>⚠️ โฟม</span></label>
+            </div>
+          </fieldset>
+          <fieldset><legend>ดอกไม้</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="flower" value="marigold" checked><span>ดาวเรือง</span></label>
+              <label class="chip"><input type="radio" name="flower" value="rose"><span>กุหลาบ</span></label>
+              <label class="chip"><input type="radio" name="flower" value="lotus"><span>ดอกบัว</span></label>
+              <label class="chip"><input type="radio" name="flower" value="orchid"><span>กล้วยไม้</span></label>
+            </div>
+          </fieldset>
+          <fieldset><legend>ยึดใบตองด้วย</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="pin" value="wood" checked><span>🪵 ไม้กลัด</span></label>
+              <label class="chip bad"><input type="radio" name="pin" value="staple"><span>⚠️ ลวดเย็บ / ตะปู</span></label>
+            </div>
+          </fieldset>
+          <fieldset><legend>ตกแต่ง</legend>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="candle" checked><span>🕯️ เทียน</span></label>
+              <label class="chip"><input type="checkbox" name="incense" checked><span>ธูป 3 ดอก</span></label>
+            </div>
+          </fieldset>
+          <div id="buildMsg" class="okbox" role="status"></div>
+        </form>
+        <div>
+          <div class="stage">
+            <canvas id="kPreview" width="800" height="600" role="img" aria-label="ภาพกระทงที่ประดิษฐ์"></canvas>
+            <div class="badge" id="kBadge"></div>
+          </div>
+          <div class="builder-actions">
+            <label class="f" style="flex:1;min-width:220px">
+              <input id="wishQuick" maxlength="60" aria-label="คำอธิษฐาน" placeholder="คำอธิษฐานสั้น ๆ (ไม่บังคับ)"></label>
+            <button class="btn primary" id="floatBtn" type="button">🪷 ลอยกระทง</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== เวลาย่อยสลาย ===== -->
+  <section class="band" id="facts">
+    <div class="wrap">
+      <div class="band-head">
+        <span class="kicker" id="factKicker">รู้ไหม</span>
+        <h2 id="factTitle">กระทงแต่ละแบบย่อยสลายนานแค่ไหน</h2>
+        <p class="muted" id="factLead">ระยะเวลาโดยประมาณ ขึ้นกับสภาพน้ำและอากาศ</p>
+      </div>
+      <ul class="decay" id="decay" data-only="krathong">
+        <li><span>🍞 ขนมปัง</span><span class="bar"><i data-w="11"></i></span><b>≈ 3 วัน</b></li>
+        <li><span>🍌 หยวกกล้วย / ใบตอง</span><span class="bar"><i data-w="27"></i></span><b>≈ 14 วัน</b></li>
+        <li><span>🌾 แป้งมันสำปะหลัง</span><span class="bar"><i data-w="35"></i></span><b>≈ 30 วัน</b></li>
+        <li class="bad"><span>⚠️ โฟม</span><span class="bar"><i data-w="100"></i></span><b>50 ปีขึ้นไป</b></li>
+      </ul>
+      <ul class="tips" id="tips"></ul>
+    </div>
+  </section>
+
+  <!-- ===== คำมั่น (วันอื่น ๆ) ===== -->
+  <section class="band white" id="pledge" data-only="generic">
+    <div class="wrap">
+      <div class="band-head">
+        <span class="kicker">ขั้นที่ 1</span>
+        <h2>เลือกสิ่งที่ฉันจะทำ</h2>
+        <p class="muted">เลือก 1 ข้อ ข้อความจะไปอยู่บนโปสการ์ดของคุณ</p>
+      </div>
+      <div class="chips" id="actions"></div>
+    </div>
+  </section>
+
+  <!-- ===== โปสการ์ด ===== -->
+  <section class="band" id="postcard">
+    <div class="wrap">
+      <div class="band-head">
+        <span class="kicker">ขั้นที่ 2</span>
+        <h2>โปสการ์ดของฉัน</h2>
+        <p class="muted">ใส่ชื่อและข้อความ แล้วบันทึกรูปหรือแชร์ต่อให้เพื่อนร่วมรณรงค์ ทุกครั้งที่สร้างโปสการ์ดจะได้แสตมป์สะสม</p>
+      </div>
+      <div class="grid2">
+        <div class="card pc-form">
+          <label class="f">ชื่อของคุณ (หรือชื่อเล่น)
+            <input id="pcName" maxlength="40" autocomplete="nickname" placeholder="เช่น พยาบาลน้ำฝน หน่วยไตเทียม">
+          </label>
+          <label class="f"><span id="pcMsgLabel">คำอธิษฐาน / คำมั่นของฉัน</span>
+            <textarea id="pcMsg" maxlength="90"></textarea>
+            <small>ไม่เกิน 90 ตัวอักษร ข้อมูลไม่ถูกส่งออกจากเครื่องของคุณ</small>
+          </label>
+          <div class="share">
+            <button class="btn primary" id="dlBtn" type="button">⬇️ บันทึกรูป</button>
+            <button class="btn" id="shareBtn" type="button">📤 แชร์รูป</button>
+            <a class="btn line" id="lineBtn" target="_blank" rel="noopener">แชร์ลิงก์ทาง LINE</a>
+          </div>
+        </div>
+        <div class="pc-preview"><canvas id="pc" width="1080" height="1350" role="img" aria-label="ตัวอย่างโปสการ์ด"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== แสตมป์ ===== -->
+  <section class="band white" id="passport">
+    <div class="wrap">
+      <div class="band-head">
+        <span class="kicker">พาสปอร์ตรักษ์โลก</span>
+        <h2>สะสมแสตมป์ให้ครบทุกวันสิ่งแวดล้อม</h2>
+        <p class="muted">ร่วมกิจกรรมในแต่ละช่วงรณรงค์เพื่อรับแสตมป์ (เก็บไว้ในเครื่องนี้)</p>
+      </div>
+      <div class="progress"><span id="stampCount"></span><span class="bar"><i id="stampBar" style="width:0"></i></span></div>
+      <ul class="stamps" id="stamps"></ul>
+    </div>
+  </section>
+
+  <!-- ===== ปฏิทิน ===== -->
+  <section class="band" id="calendar">
+    <div class="wrap">
+      <div class="band-head">
+        <span class="kicker">ปฏิทินรณรงค์</span>
+        <h2>วันสิ่งแวดล้อมที่กำลังจะมาถึง</h2>
+        <p class="muted">หน้านี้จะเปลี่ยนเป็นแคมเปญถัดไปให้อัตโนมัติเมื่อใกล้ถึงวัน</p>
+      </div>
+      <ol class="cal" id="cal"></ol>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">Green Hospital · โรงพยาบาลสีเขียว · <a href="index.html">กลับหน้าแรก</a></div></footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="campaigns.js"></script>
+<script>
+(function(){
+  'use strict';
+  const G = window.GHCampaign;
+  const $ = id => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const now = G.today();
+  const isActive = !!G.active(now);
+  const C = G.featured(now);
+  const isK = C.special === 'krathong';
+  const year = C.when.getFullYear();
+  const stampKey = C.id + '-' + year;
+
+  /* ---------- ธีมและหน้าปก ---------- */
+  document.documentElement.style.setProperty('--c1', C.colors[0]);
+  document.documentElement.style.setProperty('--c2', C.colors[1]);
+  document.title = C.name + ' | Green Hospital';
+  document.querySelectorAll('[data-only]').forEach(el => { el.hidden = el.dataset.only !== (isK ? 'krathong' : 'generic'); });
+  $('hero').classList.toggle('generic', !isK);
+  $('moon').hidden = !isK;
+  $('ctaBuild').hidden = !isK;
+  if (!isK) { $('bigIc').hidden = false; $('bigIc').textContent = C.icon; document.querySelector('.stars').hidden = true; }
+  $('heroTag').textContent = (isActive ? 'แคมเปญตอนนี้ · ' : 'แคมเปญถัดไป · ') + G.countdownText(C);
+  $('heroTitle').innerHTML = isK ? '' : `<span class="ic" aria-hidden="true">${C.icon}</span>`;
+  $('heroTitle').append(C.name);
+  $('heroSlogan').textContent = C.slogan;
+  $('heroDate').textContent = G.thaiDate(C.when);
+  if (params.get('date') || params.get('campaign')) {
+    $('previewNote').hidden = false;
+    $('previewText').textContent = 'กำลังแสดงตัวอย่าง' + (params.get('date') ? ' (สมมติวันนี้คือ ' + G.thaiDate(now) + ')' : '');
+  }
+
+  /* นับถอยหลัง */
+  function tick() {
+    const el = $('count');
+    if (C.daysLeft <= 0) { el.innerHTML = `<div class="today">${C.daysLeft === 0 ? '🎉 วันนี้คือ' + C.name : 'ขอบคุณที่ร่วมรณรงค์'}</div>`; return; }
+    const ref = params.get('date') ? now.getTime() : Date.now();
+    let ms = Math.max(0, C.when.getTime() - ref);
+    const d = Math.floor(ms / 864e5); ms -= d * 864e5;
+    const h = Math.floor(ms / 36e5); ms -= h * 36e5;
+    const m = Math.floor(ms / 6e4);
+    el.innerHTML = [[d, 'วัน'], [h, 'ชั่วโมง'], [m, 'นาที']].map(([n, u]) => `<div><b>${n}</b><span>${u}</span></div>`).join('');
+  }
+  tick(); setInterval(tick, 30000);
+
+  /* เคล็ดลับ */
+  $('tips').innerHTML = C.tips.map(t => `<li>${esc(t)}</li>`).join('');
+  if (!isK) { $('factKicker').textContent = 'ทำได้ทันที'; $('factTitle').textContent = 'เคล็ดลับง่าย ๆ สำหรับ' + C.name; $('factLead').hidden = true; }
+  function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+  /* แถบเวลาย่อยสลาย: เล่นเมื่อเลื่อนมาเห็น */
+  const bars = document.querySelectorAll('#decay i');
+  new IntersectionObserver((es, ob) => es.forEach(e => { if (e.isIntersecting) { bars.forEach(b => b.style.width = b.dataset.w + '%'); ob.disconnect(); } }), { threshold: .3 }).observe($('decay'));
+
+  function toast(t) { const el = $('toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('show'), 2600); }
+
+  /* ---------- กระทง ---------- */
+  let K = { base: 'banana', flower: 'marigold', candle: true, incense: true };
+  let pending; // ตัวหน่วงการวาดโปสการ์ด
+  function kImage(k, w = 320) {
+    const c = document.createElement('canvas'); c.width = w; c.height = w * .75;
+    G.drawKrathong(c.getContext('2d'), w / 2, w * .62, w / 400, k);
+    return c.toDataURL('image/png');
+  }
+  function readBuilder() {
+    const f = $('builder');
+    const base = f.base.value, pin = f.pin.value;
+    const msg = $('buildMsg');
+    if (base === 'foam' || pin === 'staple') {
+      msg.className = 'warnbox';
+      msg.textContent = base === 'foam'
+        ? 'โฟมใช้เวลาย่อยสลาย 50 ปีขึ้นไป และกลายเป็นขยะในแม่น้ำ ลองเลือกหยวกกล้วย ขนมปัง หรือแป้งมันสำปะหลังแทนนะ'
+        : 'ลวดเย็บและตะปูไม่ย่อยสลาย เป็นอันตรายต่อสัตว์น้ำและคนเก็บกระทง ใช้ไม้กลัดแทนได้เลย';
+      $('floatBtn').disabled = true;
+      return false;
+    }
+    K = { base, flower: f.flower.value, candle: f.candle.checked, incense: f.incense.checked };
+    msg.className = 'okbox';
+    msg.textContent = `เยี่ยม! กระทง${G.BASES[base].name}ย่อยสลายได้ใน ${G.BASES[base].decay}`;
+    $('floatBtn').disabled = false;
+    return true;
+  }
+  function renderBuilder() {
+    if (!readBuilder()) return;
+    const cv = $('kPreview'), ctx = cv.getContext('2d');
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.lineWidth = 3;
+    for (let y = 400; y < 600; y += 36) { ctx.beginPath(); for (let x = 0; x <= 800; x += 20) ctx.lineTo(x, y + Math.sin(x / 40 + y) * 5); ctx.stroke(); }
+    G.drawKrathong(ctx, 400, 380, 1.45, K);
+    $('kBadge').innerHTML = `ฐาน<b>${G.BASES[K.base].name}</b> · ดอก<b>${G.FLOWERS[K.flower].name}</b> · ย่อยสลาย <b>${G.BASES[K.base].decay}</b>`;
+    drawPC();
+  }
+  if (isK) {
+    $('builder').addEventListener('change', renderBuilder);
+    renderBuilder();
+  }
+
+  /* แม่น้ำบนหน้าปก */
+  const MINE = 'gh-krathong-' + year;
+  function addFloat(src, opts = {}) {
+    const fig = document.createElement('figure');
+    fig.className = 'float' + (opts.mine ? ' mine' : '');
+    fig.style.cssText = `--w:${opts.w || 110}px;--t:${opts.t || 40}s;--d:${opts.d || 0}s;margin:0;bottom:${opts.b || 22}%`;
+    fig.innerHTML = `<img alt="" src="${src}">` + (opts.label ? `<figcaption>${esc(opts.label)}</figcaption>` : '');
+    $('river').append(fig);
+  }
+  if (isK) {
+    const bases = ['banana', 'bread', 'cassava'], fl = Object.keys(G.FLOWERS);
+    for (let i = 0; i < 6; i++) addFloat(kImage({ base: bases[i % 3], flower: fl[i % 4], candle: true, incense: i % 2 === 0 }, 200), { w: 70 + (i % 3) * 16, t: 46 + i * 7, d: -i * 9, b: 14 + (i % 3) * 14 });
+    const saved = JSON.parse(localStorage.getItem(MINE) || '[]');
+    saved.slice(-3).forEach((s, i) => addFloat(kImage(s.k), { mine: true, w: 120, t: 34, d: -i * 11, b: 26, label: s.wish || 'กระทงของฉัน' }));
+    $('floatBtn').addEventListener('click', () => {
+      if (!readBuilder()) return;
+      const wish = $('wishQuick').value.trim();
+      const list = JSON.parse(localStorage.getItem(MINE) || '[]'); list.push({ k: K, wish }); localStorage.setItem(MINE, JSON.stringify(list.slice(-10)));
+      addFloat(kImage(K), { mine: true, w: 130, t: 30, d: -6, b: 26, label: wish || 'กระทงของฉัน' });
+      if (wish && !$('pcMsg').value.trim()) { $('pcMsg').value = wish; drawPC(); }
+      giveStamp();
+      toast('กระทงของคุณลอยไปแล้ว 🪷 ไม่สร้างขยะเลยสักชิ้น');
+      $('hero').scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  /* ---------- คำมั่น (วันอื่น) ---------- */
+  if (!isK) {
+    $('actions').innerHTML = C.actions.map((a, i) => `<label class="chip"><input type="radio" name="act" value="${esc(a)}"${i ? '' : ' checked'}><span>${esc(a)}</span></label>`).join('');
+    $('actions').addEventListener('change', e => { $('pcMsg').value = 'ฉันจะ' + e.target.value; drawPC(); });
+    $('pcMsg').value = 'ฉันจะ' + C.actions[0];
+    $('pcMsgLabel').textContent = 'คำมั่นของฉัน';
+  } else {
+    $('pcMsg').placeholder = 'เช่น ขอให้แม่น้ำใสสะอาด ทุกคนสุขภาพแข็งแรง';
+  }
+
+  /* ---------- โปสการ์ด ---------- */
+  function drawPC() {
+    clearTimeout(pending);
+    pending = setTimeout(() => G.drawPostcard($('pc'), C, { name: $('pcName').value, message: $('pcMsg').value || (isK ? 'ลอยกระทงด้วยวัสดุธรรมชาติ รักษ์แม่น้ำ รักษ์โลก' : ''), krathong: K }), 120);
+  }
+  $('pcName').addEventListener('input', drawPC);
+  $('pcMsg').addEventListener('input', drawPC);
+  $('pcName').value = localStorage.getItem('gh-name') || '';
+  $('pcName').addEventListener('change', () => localStorage.setItem('gh-name', $('pcName').value.trim()));
+  drawPC();
+
+  const fileName = () => `postcard-${C.id}-${year}.png`;
+  function blob() { return new Promise(r => $('pc').toBlob(r, 'image/png')); }
+  $('dlBtn').addEventListener('click', async () => {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(await blob()); a.download = fileName(); a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    giveStamp(); toast('บันทึกโปสการ์ดแล้ว');
+  });
+  $('shareBtn').addEventListener('click', async () => {
+    const file = new File([await blob()], fileName(), { type: 'image/png' });
+    const data = { files: [file], title: C.name, text: `${C.slogan} ${C.hashtag}` };
+    if (navigator.canShare && navigator.canShare(data)) {
+      try { await navigator.share(data); giveStamp(); } catch (e) { /* ผู้ใช้ยกเลิก */ }
+    } else { $('dlBtn').click(); toast('เครื่องนี้แชร์รูปตรงไม่ได้ จึงบันทึกรูปให้แทน'); }
+  });
+  const pageUrl = location.origin + location.pathname;
+  $('lineBtn').href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(pageUrl);
+
+  /* ---------- แสตมป์ ---------- */
+  function stamps() { return JSON.parse(localStorage.getItem('gh-stamps') || '[]'); }
+  function giveStamp() {
+    if (!isActive) return; // ให้แสตมป์เฉพาะช่วงรณรงค์จริง
+    const s = stamps(); if (!s.includes(stampKey)) { s.push(stampKey); localStorage.setItem('gh-stamps', JSON.stringify(s)); toast('ได้รับแสตมป์ ' + C.icon + ' ' + C.name); }
+    renderStamps();
+  }
+  function renderStamps() {
+    const s = stamps(), y = now.getFullYear();
+    const got = G.CAMPAIGNS.filter(c => s.includes(c.id + '-' + y) || s.includes(c.id + '-' + (c.id === C.id ? year : y)));
+    $('stamps').innerHTML = G.CAMPAIGNS.map(c => {
+      const has = got.includes(c);
+      return `<li class="stamp${has ? ' got' : ''}${c.id === C.id ? ' now' : ''}"><span class="e" aria-hidden="true">${c.icon}</span>${esc(c.name)}<span class="sr" hidden>${has ? 'สะสมแล้ว' : 'ยังไม่มี'}</span></li>`;
+    }).join('');
+    $('stampCount').textContent = `สะสมแล้ว ${got.length} / ${G.CAMPAIGNS.length} ดวง`;
+    $('stampBar').style.width = (got.length / G.CAMPAIGNS.length * 100) + '%';
+  }
+  renderStamps();
+
+  /* ---------- ปฏิทิน ---------- */
+  $('cal').innerHTML = G.upcoming(now).map(c => `<li class="${c.id === C.id ? 'on' : ''}">
+      <span class="e" aria-hidden="true">${c.icon}</span>
+      <span><b>${esc(c.name)}</b><span class="when">${G.thaiDate(c.when)} · ขึ้นแคมเปญอัตโนมัติก่อน ${c.lead} วัน</span></span>
+      <span class="left">${G.countdownText(c)}<br><a href="?campaign=${c.id}">ดูตัวอย่าง</a></span></li>`).join('');
+})();
+</script>
+</body>
+</html>

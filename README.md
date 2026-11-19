@@ -17,6 +17,21 @@
 | `sw.js` | Service worker เก็บไฟล์หน้าเว็บไว้ในเครื่อง ให้เปิดแอปได้แม้ไม่มีอินเทอร์เน็ต |
 | `icons/` | ไอคอนแอปทุกขนาด |
 
+## แคมเปญวันสิ่งแวดล้อม (ขึ้นอัตโนมัติ)
+
+| ไฟล์ | หน้าที่ |
+|---|---|
+| `campaigns.js` | ปฏิทินวันสิ่งแวดล้อม 14 วัน ข้อความรณรงค์ สีธีม และตัววาดโปสการ์ด |
+| `campaign.html` | หน้ารณรงค์: นับถอยหลัง ประดิษฐ์กระทง ลอยกระทงออนไลน์ สร้างโปสการ์ด แสตมป์สะสม ปฏิทิน |
+
+- เมื่อใกล้ถึงวันสำคัญ (ค่าเริ่มต้น 7 วัน ลอยกระทง 21 วัน) หน้าแรกจะขึ้นแถบแคมเปญและโปสการ์ดเด้งวันละครั้งเอง
+  และหน้า `campaign.html` จะเปลี่ยนธีมเป็นแคมเปญนั้นเอง ไม่ต้องแก้โค้ด
+- **ลอยกระทงเป็นวันตามจันทรคติ** ต้องเพิ่มวันที่ของปีถัดไปใน `LOY_KRATHONG` ใน `campaigns.js` ทุกปี (ตรวจกับปฏิทินทางการ)
+- ดูตัวอย่างล่วงหน้า: `campaign.html?date=2027-06-01` (สมมติวันที่) หรือ `campaign.html?campaign=ocean` (บังคับแคมเปญ)
+  ใช้ได้กับ `index.html?date=...` ด้วย
+- เพิ่ม/แก้แคมเปญ: แก้รายการ `CAMPAIGNS` ใน `campaigns.js` (ชื่อ วันที่ ไอคอน สี สโลแกน คำมั่น เคล็ดลับ)
+- ไม่มีการส่งชื่อหรือข้อความของผู้ใช้ออกจากเครื่อง (เก็บใน localStorage เท่านั้น)
+
 ## ขั้นที่ 1: อัปเดต Apps Script
 
 1. เปิด Google Sheet แล้วไปที่ **ส่วนขยาย → Apps Script**
@@ -38,7 +53,7 @@ window.GH_CONFIG = {
 ## ขั้นที่ 3: ขึ้น GitHub Pages
 
 1. สร้าง repository ใหม่ใน GitHub (เช่น `green-hospital`) แบบ **Public**
-2. กด **Add file → Upload files** แล้วลากไฟล์ `index.html`, `config.js`, `manifest.webmanifest`, `sw.js`, `README.md` และโฟลเดอร์ `icons`, `apps-script` ขึ้นไป แล้วกด Commit
+2. กด **Add file → Upload files** แล้วลากไฟล์ `index.html`, `campaign.html`, `campaigns.js`, `config.js`, `manifest.webmanifest`, `sw.js`, `README.md` และโฟลเดอร์ `icons`, `apps-script` ขึ้นไป แล้วกด Commit
    (ไม่ต้องอัปโหลดโฟลเดอร์ `VOD` เพราะไฟล์วิดีโอใหญ่ และไม่ได้ใช้ในหน้าเว็บ)
 3. ไปที่ **Settings → Pages** → Source: **Deploy from a branch** → Branch: `main` / `(root)` → Save
 4. รอ 1–2 นาที เว็บจะอยู่ที่ `https://<ชื่อผู้ใช้>.github.io/green-hospital/`
