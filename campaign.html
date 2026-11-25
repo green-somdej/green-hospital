@@ -446,7 +446,7 @@ footer a{color:#fff}
 <script src="config.js"></script>
 <script src="campaigns.js"></script>
 <script>
-(function(){
+window.GHCampaign.ready.then(function(){
   'use strict';
   const G = window.GHCampaign;
   const $ = id => document.getElementById(id);
@@ -695,7 +695,7 @@ footer a{color:#fff}
     async function load() {
       if (!API) { box.innerHTML = '<p class="warnbox">ยังไม่ได้ใส่ลิงก์ Apps Script ใน config.js จึงยังเล่นเกมนี้ไม่ได้</p>'; return; }
       box.innerHTML = '<p class="muted">กำลังโหลดคำถาม…</p>';
-      try { QZ = await call('getQuiz', { campaign: C.id }); intro(); }
+      try { QZ = await call('getQuiz', { campaign: C.id, test: preview ? 1 : 0 }); intro(); }
       catch (e) {
         box.innerHTML = `<p class="warnbox">โหลดคำถามไม่สำเร็จ: ${esc(e.message)}</p><div><button class="btn" type="button" id="qzRetry">ลองใหม่</button></div>`;
         $('qzRetry').addEventListener('click', load);
@@ -736,7 +736,7 @@ footer a{color:#fff}
     }
     async function finish() {
       box.innerHTML = '<p class="muted">กำลังตรวจคำตอบ…</p>';
-      try { graded = await call('gradeQuiz', { campaign: C.id, answers: JSON.stringify(answers) }); result(); }
+      try { graded = await call('gradeQuiz', { campaign: C.id, answers: JSON.stringify(answers), test: preview ? 1 : 0 }); result(); }
       catch (e) {
         box.innerHTML = `<p class="warnbox">ตรวจคำตอบไม่สำเร็จ: ${esc(e.message)}</p><div><button class="btn" type="button" id="qzRetry">ลองส่งตรวจอีกครั้ง</button></div>`;
         $('qzRetry').addEventListener('click', finish);
@@ -844,7 +844,7 @@ footer a{color:#fff}
       <span class="e" aria-hidden="true">${c.icon}</span>
       <span><b>${esc(c.name)}</b><span class="when">${G.dateText(c)} · ${c.event ? 'กิจกรรมเฉพาะช่วง' : 'ขึ้นแคมเปญอัตโนมัติก่อน ' + c.lead + ' วัน'}</span></span>
       <span class="left">${G.countdownText(c)}<br><a href="?campaign=${c.id}">ดูตัวอย่าง</a></span></li>`).join('');
-})();
+});
 </script>
 </body>
 </html>

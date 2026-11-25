@@ -6,8 +6,8 @@
  *   lead  : ขึ้นแบนเนอร์และโปสการ์ดอัตโนมัติก่อนถึงวันกี่วัน (ค่าเริ่มต้น 7)
  *   grace : แสดงต่อหลังวันจริงอีกกี่วัน (ค่าเริ่มต้น 0 = เลิกแสดงทันทีเมื่อพ้นวัน)
  *
- * กิจกรรมเฉพาะช่วง (เช่น ตอบคำถามลุ้นรางวัล): เพิ่มใน EVENTS ด้านล่าง
- *   ใส่ start / end เป็น "YYYY-MM-DD" ระบบจะขึ้นเองตั้งแต่วันเริ่ม และหายเองหลังวันจบ
+ * กิจกรรมเฉพาะช่วง (เช่น ตอบคำถามลุ้นรางวัล): ตั้งในชีต "เกม" ของ Google Sheet แล้วติ๊กอนุมัติ (ดู README)
+ *   ระบบจะขึ้นเองตั้งแต่วันเริ่ม และหายเองหลังวันจบ
  *   ช่วงที่มีกิจกรรม จะแสดงกิจกรรมก่อนวันสิ่งแวดล้อม
  *
  * ลอยกระทงเป็นวันตามจันทรคติ ต้องใส่วันที่ของแต่ละปีไว้ใน LOY_KRATHONG
@@ -142,28 +142,47 @@
     }
   ];
 
-  /* ---------------- กิจกรรมเฉพาะช่วง ----------------
-   * start, end : วันเริ่มและวันสุดท้าย (YYYY-MM-DD) ขึ้นเองอัตโนมัติ หายเองหลังวันสุดท้าย
-   * lead       : ประกาศล่วงหน้าก่อนวันเริ่มกี่วัน (ค่าเริ่มต้น 0)
-   * draft      : true = ยังไม่ขึ้นจริง ดูได้เฉพาะลิงก์ตัวอย่าง campaign.html?campaign=<id>
-   * type 'quiz': เกมตอบคำถาม
-   *   คำถาม เฉลย และเกณฑ์ผ่าน อยู่ในชีต "คำถาม" ของ Google Sheet (คอลัมน์ A = id ของกิจกรรมนี้)
-   *   ห้ามใส่เฉลยไว้ในไฟล์นี้ เพราะใครก็เปิดดูไฟล์นี้ได้ Apps Script เป็นคนตรวจคำตอบ
-   *   prize : ของรางวัล   claim : วิธีรับรางวัล
+  /* ---------------- กิจกรรมเฉพาะช่วง (เกมตอบคำถาม) ----------------
+   * ตั้งเกมในชีต "เกม" ของ Google Sheet แล้วติ๊กอนุมัติ ระบบโหลดมาที่นี่เอง ไม่ต้องแก้ไฟล์นี้
+   * (เกมขึ้นตั้งแต่วันเริ่ม และหายเองหลังวันสุดท้าย)
+   * คำถาม เฉลย และเกณฑ์ผ่านอยู่ในชีต "คำถาม" เท่านั้น ห้ามใส่เฉลยในไฟล์นี้ เพราะใครก็เปิดดูไฟล์นี้ได้
+   * ตัวอย่างวิธีเขียนด้วยมือ (ไม่จำเป็น): { id, type: 'quiz', icon, start: 'YYYY-MM-DD', end: 'YYYY-MM-DD', name, slogan, colors: [c1, c2], prize, claim }
    */
-  const EVENTS = [
-    {
-      id: 'quiz-2026-12', type: 'quiz', icon: '🎁', draft: true,
-      start: '2026-11-26', end: '2026-12-15',
-      name: 'ตอบคำถามรักษ์โลก ลุ้นรับของรางวัล',
-      slogan: 'ตอบให้ผ่าน แล้วลุ้นรางวัลรักษ์โลก', colors: ['#5b1f6b', '#d1495b'],
-      hashtag: '#GreenHospitalQuiz',
-      prize: 'กระบอกน้ำรักษ์โลก 30 รางวัล',
-      claim: 'กด "ส่งชื่อเข้าร่วมลุ้นรางวัล" ภายในวันที่ 15 ธันวาคม 2569 จับรางวัลและประกาศผล 20 ธันวาคม 2569 ผู้ได้รางวัลแสดงรหัสนี้เพื่อรับของ',
-      actions: ['ตอบคำถามให้ครบทุกข้อ', 'ชวนเพื่อนร่วมเล่น'],
-      tips: ['ตอบได้หลายครั้ง ระบบเก็บคะแนนที่ดีที่สุดไว้ให้', 'ใส่ชื่อจริงหรือชื่อที่ทีมติดต่อกลับได้', 'บันทึกรูปผลคะแนนเก็บไว้เป็นหลักฐานรับรางวัล']
-    }
-  ];
+  const EVENTS = [];
+  const API = ((window.GH_CONFIG || {}).apiUrl || '').trim();
+  const GAMES_KEY = 'gh-games';
+  const THEMES = [['#5b1f6b', '#d1495b'], ['#0b3d6b', '#1c8fb8'], ['#14532d', '#6aa84f'], ['#7a3b00', '#e0a030'], ['#3b1f5c', '#2f86a6']];
+  function toEvent(g) {
+    let h = 0; for (const ch of g.id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return {
+      id: g.id, type: 'quiz', icon: g.icon || '🎁', start: g.start, end: g.end, name: g.name,
+      slogan: g.slogan || 'ตอบให้ผ่าน แล้วลุ้นรับรางวัล',
+      colors: g.colors && g.colors.length === 2 ? g.colors : THEMES[h % THEMES.length],
+      hashtag: '#GreenHospitalQuiz', prize: g.prize || '', claim: g.claim || '', actions: [], tips: []
+    };
+  }
+  function applyGames(list) {
+    EVENTS.length = 0;
+    (Array.isArray(list) ? list : []).forEach(g => {
+      const ok = g && /^[\w-]{1,40}$/.test(g.id) && /^\d{4}-\d{2}-\d{2}$/.test(g.start) && /^\d{4}-\d{2}-\d{2}$/.test(g.end) && g.name;
+      if (ok) EVENTS.push(toEvent(g));
+    });
+  }
+  function fetchGames() {
+    const u = new URL(API); u.searchParams.set('action', 'getGames');
+    return fetch(u).then(r => r.json()).then(j => { if (!j.ok) throw new Error(j.error || 'โหลดเกมไม่สำเร็จ'); return j.data; });
+  }
+  /* หน้าเว็บรอ GHCampaign.ready ก่อนคำนวณแคมเปญ: มีข้อมูลเก่าในเครื่องใช้ได้ทันที แล้วอัปเดตเบื้องหลัง */
+  const ready = (async () => {
+    if (!API) return;
+    let cached = null;
+    try { cached = JSON.parse(localStorage.getItem(GAMES_KEY) || 'null'); } catch (e) {}
+    const refresh = () => fetchGames().then(d => { try { localStorage.setItem(GAMES_KEY, JSON.stringify(d)); } catch (e) {} return d; });
+    const forced = new URLSearchParams(location.search).get('campaign');
+    if (Array.isArray(cached) && (!forced || cached.some(g => g.id === forced))) { applyGames(cached); refresh().catch(() => {}); return; }
+    try { applyGames(await Promise.race([refresh(), new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 5000))])); }
+    catch (e) { if (Array.isArray(cached)) applyGames(cached); }
+  })();
 
   /* ---------------- วันที่ ---------------- */
   const DAY = 86400000;
@@ -642,5 +661,5 @@
     return canvas;
   }
 
-  window.GHCampaign = { CAMPAIGNS, EVENTS, BASES, FLOWERS, DESIGNS, today, upcoming, active, featured, thaiDate, dateText, countdownText, drawKrathong, drawPostcard, diffDays, designsFor, randomDesign, randomBlessing };
+  window.GHCampaign = { ready, CAMPAIGNS, EVENTS, BASES, FLOWERS, DESIGNS, today, upcoming, active, featured, thaiDate, dateText, countdownText, drawKrathong, drawPostcard, diffDays, designsFor, randomDesign, randomBlessing };
 })();

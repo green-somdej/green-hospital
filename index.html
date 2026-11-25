@@ -1198,8 +1198,7 @@ trackVisit();
 <script src="campaigns.js"></script>
 <script>
 /* แคมเปญวันสิ่งแวดล้อม: ขึ้นแถบและโปสการ์ดอัตโนมัติเมื่อใกล้ถึงวัน (ตั้งค่าใน campaigns.js) */
-(function(){
-  if(!window.GHCampaign) return;
+if(window.GHCampaign) window.GHCampaign.ready.then(function(){
   const G=window.GHCampaign, c=G.active();
   if(!c) return;
   const qs=location.search.includes('date=')||location.search.includes('campaign=')?location.search:'';
@@ -1231,7 +1230,7 @@ trackVisit();
   /* สุ่มลายธรรมชาติและคำอวยพร แต่ละคนจะได้ไม่เหมือนกัน */
   G.drawPostcard(document.getElementById('cpCanvas'),c,{design:G.randomDesign(c).id,message:isQ?'ตอบคำถามให้ผ่านเกณฑ์ แล้วส่งชื่อลุ้นรับรางวัล':G.randomBlessing(c),pledge:c.special==='krathong'?'':isQ?'🎁 '+(c.prize||'ลุ้นรับของรางวัล'):'ฉันจะ'+c.actions[0]})
     .then(()=>setTimeout(()=>{ if(!document.querySelector('dialog[open]')) pop.showModal(); },1200));
-})();
+});
 </script>
 </body>
 </html>
