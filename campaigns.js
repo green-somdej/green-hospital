@@ -4,7 +4,11 @@
  * วิธีเพิ่ม/แก้แคมเปญ: แก้รายการ CAMPAIGNS ด้านล่าง
  *   date  : "MM-DD" สำหรับวันที่ตายตัว หรือใช้ rule (ดูตัวอย่าง Earth Hour / ลอยกระทง)
  *   lead  : ขึ้นแบนเนอร์และโปสการ์ดอัตโนมัติก่อนถึงวันกี่วัน (ค่าเริ่มต้น 7)
- *   grace : แสดงต่อหลังวันจริงอีกกี่วัน (ค่าเริ่มต้น 1)
+ *   grace : แสดงต่อหลังวันจริงอีกกี่วัน (ค่าเริ่มต้น 0 = เลิกแสดงทันทีเมื่อพ้นวัน)
+ *
+ * กิจกรรมเฉพาะช่วง (เช่น ตอบคำถามลุ้นรางวัล): เพิ่มใน EVENTS ด้านล่าง
+ *   ใส่ start / end เป็น "YYYY-MM-DD" ระบบจะขึ้นเองตั้งแต่วันเริ่ม และหายเองหลังวันจบ
+ *   ช่วงที่มีกิจกรรม จะแสดงกิจกรรมก่อนวันสิ่งแวดล้อม
  *
  * ลอยกระทงเป็นวันตามจันทรคติ ต้องใส่วันที่ของแต่ละปีไว้ใน LOY_KRATHONG
  * ** ตรวจสอบกับปฏิทินทางการก่อนใช้ทุกปี ** ถ้าไม่มีปีนั้นในตาราง แคมเปญลอยกระทงจะไม่ขึ้น
@@ -112,7 +116,7 @@
       tips: ['สวมถุงมือทุกครั้งที่เก็บขยะ', 'แยกขวดและกระป๋องไปรีไซเคิล', 'ถ่ายภาพก่อน–หลังเพื่อชวนคนอื่น']
     },
     {
-      id: 'loykrathong', icon: '🪷', lead: 21, grace: 1, special: 'krathong',
+      id: 'loykrathong', icon: '🪷', lead: 21, special: 'krathong',
       rule: y => LOY_KRATHONG[y] ? parseISO(LOY_KRATHONG[y]) : null,
       name: 'ลอยกระทงรักษ์โลก',
       slogan: 'ขอขมาแม่น้ำ ด้วยกระทงที่แม่น้ำรับได้', colors: ['#0b1f4a', '#2b5aa0'],
@@ -135,6 +139,29 @@
       hashtag: '#WorldSoilDay',
       actions: ['ทำปุ๋ยหมักจากเศษอาหาร', 'ลดใช้สารเคมีในสวน', 'ปลูกพืชคลุมดิน'],
       tips: ['เศษผักผลไม้ทำปุ๋ยหมักได้', 'ไม่เผาเศษใบไม้ นำไปคลุมดินแทน', 'ทิ้งถ่านไฟฉายและขยะอันตรายแยกจากขยะทั่วไป']
+    }
+  ];
+
+  /* ---------------- กิจกรรมเฉพาะช่วง ----------------
+   * start, end : วันเริ่มและวันสุดท้าย (YYYY-MM-DD) ขึ้นเองอัตโนมัติ หายเองหลังวันสุดท้าย
+   * lead       : ประกาศล่วงหน้าก่อนวันเริ่มกี่วัน (ค่าเริ่มต้น 0)
+   * draft      : true = ยังไม่ขึ้นจริง ดูได้เฉพาะลิงก์ตัวอย่าง campaign.html?campaign=<id>
+   * type 'quiz': เกมตอบคำถาม
+   *   คำถาม เฉลย และเกณฑ์ผ่าน อยู่ในชีต "คำถาม" ของ Google Sheet (คอลัมน์ A = id ของกิจกรรมนี้)
+   *   ห้ามใส่เฉลยไว้ในไฟล์นี้ เพราะใครก็เปิดดูไฟล์นี้ได้ Apps Script เป็นคนตรวจคำตอบ
+   *   prize : ของรางวัล   claim : วิธีรับรางวัล
+   */
+  const EVENTS = [
+    {
+      id: 'quiz-2026-12', type: 'quiz', icon: '🎁', draft: true,
+      start: '2026-11-26', end: '2026-12-15',
+      name: 'ตอบคำถามรักษ์โลก ลุ้นรับของรางวัล',
+      slogan: 'ตอบให้ผ่าน แล้วลุ้นรางวัลรักษ์โลก', colors: ['#5b1f6b', '#d1495b'],
+      hashtag: '#GreenHospitalQuiz',
+      prize: 'กระบอกน้ำรักษ์โลก 30 รางวัล',
+      claim: 'กด "ส่งชื่อเข้าร่วมลุ้นรางวัล" ภายในวันที่ 15 ธันวาคม 2569 จับรางวัลและประกาศผล 20 ธันวาคม 2569 ผู้ได้รางวัลแสดงรหัสนี้เพื่อรับของ',
+      actions: ['ตอบคำถามให้ครบทุกข้อ', 'ชวนเพื่อนร่วมเล่น'],
+      tips: ['ตอบได้หลายครั้ง ระบบเก็บคะแนนที่ดีที่สุดไว้ให้', 'ใส่ชื่อจริงหรือชื่อที่ทีมติดต่อกลับได้', 'บันทึกรูปผลคะแนนเก็บไว้เป็นหลักฐานรับรางวัล']
     }
   ];
 
@@ -167,28 +194,51 @@
     return startOfDay(new Date());
   }
 
+  /* กิจกรรมเฉพาะช่วง: when = วันเริ่ม, until = วันสุดท้าย, daysToEnd = เหลืออีกกี่วัน */
+  function eventOccurrence(e, from) {
+    const s = parseISO(e.start), u = parseISO(e.end || e.start);
+    const daysToEnd = diffDays(u, from);
+    if (daysToEnd < 0) return null; // จบแล้ว
+    return { ...e, event: true, when: s, until: u, daysLeft: diffDays(s, from), daysToEnd, lead: e.lead ?? 0, grace: 0 };
+  }
   /* ครั้งถัดไปของแต่ละแคมเปญ (รวมช่วงที่เพิ่งผ่านไปไม่เกิน grace วัน) */
   function nextOccurrence(c, from) {
-    const grace = c.grace ?? 1;
+    if (c.start) return eventOccurrence(c, from);
+    const grace = c.grace ?? 0;
     for (const y of [from.getFullYear(), from.getFullYear() + 1]) {
       const d = dateOf(c, y);
       if (d && diffDays(d, from) >= -grace) return { ...c, when: d, daysLeft: diffDays(d, from), lead: c.lead ?? 7, grace };
     }
     return null;
   }
+  const ALL = () => CAMPAIGNS.concat(EVENTS.filter(e => !e.draft));
   function upcoming(from = today()) {
-    return CAMPAIGNS.map(c => nextOccurrence(c, from)).filter(Boolean).sort((a, b) => a.when - b.when);
+    return ALL().map(c => nextOccurrence(c, from)).filter(Boolean).sort((a, b) => a.when - b.when);
   }
-  /* แคมเปญที่อยู่ในช่วงแสดงอัตโนมัติ (ใกล้ที่สุดก่อน) */
+  /* แคมเปญที่อยู่ในช่วงแสดงอัตโนมัติ: กิจกรรมเฉพาะช่วงก่อน แล้วจึงวันสิ่งแวดล้อมที่ใกล้ที่สุด */
   function active(from = today()) {
     const forced = params.get('campaign');
-    if (forced) { const c = CAMPAIGNS.find(x => x.id === forced); if (c) return nextOccurrence(c, from) || { ...c, when: from, daysLeft: 0, lead: 7, grace: 1 }; }
-    return upcoming(from).find(c => c.daysLeft <= c.lead) || null;
+    if (forced) {
+      const c = CAMPAIGNS.concat(EVENTS).find(x => x.id === forced);
+      if (c) return nextOccurrence(c, from) || { ...c, event: !!c.start, when: from, until: c.start ? parseISO(c.end || c.start) : undefined, daysLeft: 0, daysToEnd: 0, lead: 0, grace: 0 };
+    }
+    const list = upcoming(from).filter(c => c.daysLeft <= c.lead);
+    return list.find(c => c.event) || list[0] || null;
   }
   function featured(from = today()) { return active(from) || upcoming(from)[0]; }
 
   function thaiDate(d) { return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' }); }
+  /* วันที่สำหรับแสดงผล: กิจกรรมแสดงเป็นช่วง */
+  function dateText(c) {
+    if (!c.until || +c.until === +c.when) return thaiDate(c.when);
+    return c.when.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) + ' – ' + c.until.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
   function countdownText(c) {
+    if (c.event) {
+      if (c.daysLeft > 0) return `เริ่มอีก ${c.daysLeft} วัน`;
+      if (c.daysToEnd > 0) return `เหลืออีก ${c.daysToEnd + 1} วัน`; // นับวันนี้ด้วย ให้ตรงกับตัวนับถอยหลัง
+      return 'วันสุดท้าย';
+    }
     if (c.daysLeft > 1) return `อีก ${c.daysLeft} วัน`;
     if (c.daysLeft === 1) return 'พรุ่งนี้';
     if (c.daysLeft === 0) return 'วันนี้';
@@ -557,7 +607,7 @@
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 12;
     ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.font = `500 34px ${body}`;
-    ctx.fillText(thaiDate(c.when), 80, 110);
+    ctx.fillText(dateText(c), 80, 110);
     ctx.fillStyle = '#fff'; ctx.font = `700 ${c.name.length > 22 ? 64 : 80}px ${head}`;
     const tLines = wrap(ctx, c.name, 920, 2);
     tLines.forEach((l, i) => ctx.fillText(l, 80, 200 + i * 86));
@@ -581,7 +631,7 @@
     roundRect(ctx, 70, cy, 940, ch, 28); ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.fill();
     ctx.shadowColor = 'transparent'; ctx.shadowOffsetY = 0;
     ctx.fillStyle = '#12291f'; ctx.font = `500 36px ${body}`;
-    const msg = (o.message || '').trim() || c.actions[0];
+    const msg = (o.message || '').trim() || (c.actions || [])[0] || c.slogan;
     wrap(ctx, `“${msg}”`, 860, 2).forEach((l, i) => ctx.fillText(l, 110, cy + 66 + i * 50));
     ctx.font = `600 30px ${head}`; ctx.fillStyle = '#14633f';
     const who = (o.name || '').trim();
@@ -592,5 +642,5 @@
     return canvas;
   }
 
-  window.GHCampaign = { CAMPAIGNS, BASES, FLOWERS, DESIGNS, today, upcoming, active, featured, thaiDate, countdownText, drawKrathong, drawPostcard, diffDays, designsFor, randomDesign, randomBlessing };
+  window.GHCampaign = { CAMPAIGNS, EVENTS, BASES, FLOWERS, DESIGNS, today, upcoming, active, featured, thaiDate, dateText, countdownText, drawKrathong, drawPostcard, diffDays, designsFor, randomDesign, randomBlessing };
 })();

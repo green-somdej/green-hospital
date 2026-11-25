@@ -187,6 +187,38 @@ html:has(dialog[open]){overflow:hidden}
 .progress .bar{flex:1;max-width:360px;height:12px;background:var(--tint);border-radius:999px;overflow:hidden}
 .progress .bar i{display:block;height:100%;background:var(--green);border-radius:inherit;transition:width .8s}
 
+/* เกมตอบคำถาม */
+.qz{max-width:760px;display:grid;gap:16px}
+.qz .prize{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#fff8d6,#fde8ec);border:1px solid #efd7a0}
+.qz .prize .e{font-size:2.4rem;line-height:1}
+.qz .prize b{font:600 1.08rem var(--head);display:block}
+.qz .rules{display:grid;gap:6px;padding-left:1.2em;list-style:disc}
+.qz .q{font:600 clamp(1.1rem,2.4vw,1.35rem)/1.45 var(--head)}
+.qz .step{font:500 .9rem var(--head);color:var(--muted)}
+.qz-opts{display:grid;gap:10px}
+.qz-opts button{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:10px 16px;text-align:left;border:1.5px solid var(--line);border-radius:14px;background:#fff;font:500 1rem var(--body);transition:.15s}
+.qz-opts button:hover:not(:disabled){border-color:var(--green);background:var(--tint)}
+.qz-opts button .k{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--tint);color:var(--green-dark);font:600 .9rem var(--head)}
+.qz-opts button:disabled{cursor:default}
+.qz-opts button.ok{border-color:var(--green);background:var(--tint);color:var(--green-dark)}
+.qz-opts button.ok .k{background:var(--green);color:#fff}
+.qz-opts button.no{border-color:var(--warn);background:#fde8e6;color:var(--warn)}
+.qz-opts button.no .k{background:var(--warn);color:#fff}
+.qz-opts button.sel{border-color:var(--green);background:var(--tint);color:var(--green-dark)}
+.qz-opts button.sel .k{background:var(--green);color:#fff}
+.qz .review{display:grid;gap:8px;margin-top:8px}
+.qz .review li{padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;font-size:.95rem}
+.qz .review li span{display:block;color:var(--muted);font-size:.88rem}
+.qz .review li.ok{border-color:#b9dcc4;background:var(--tint)}
+.qz .review li.no{border-color:#f3c1bb;background:#fdf3f2}
+.qz details summary{cursor:pointer;font:500 .95rem var(--head);color:var(--green)}
+.qz .score{font:700 clamp(2.2rem,6vw,3.2rem)/1 var(--head);color:var(--green)}
+.qz .score.fail{color:var(--warn)}
+.qz .result{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.qz .result canvas{width:100%;max-width:380px;height:auto;aspect-ratio:4/5;border-radius:16px;box-shadow:0 20px 50px -24px rgba(0,0,0,.45);background:#ddd;justify-self:center}
+.qz .code{font:700 1.4rem var(--head);letter-spacing:.06em;color:var(--green-dark);background:var(--tint);border:1.5px dashed var(--green);border-radius:12px;padding:8px 14px;width:fit-content}
+@media(max-width:700px){.qz .result{grid-template-columns:1fr}}
+
 /* ปฏิทิน */
 .cal{display:grid;gap:10px}
 .cal li{display:grid;grid-template-columns:56px 1fr auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
@@ -289,6 +321,18 @@ footer a{color:#fff}
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== เกมตอบคำถาม (กิจกรรม type: 'quiz') ===== -->
+  <section class="band white" id="quiz" data-only="quiz">
+    <div class="wrap">
+      <div class="band-head">
+        <span class="kicker">ร่วมเล่น ลุ้นรางวัล</span>
+        <h2>ตอบคำถามรักษ์โลก</h2>
+        <p class="muted" id="qzLead"></p>
+      </div>
+      <div class="card qz" id="qz" aria-live="polite"></div>
     </div>
   </section>
 
@@ -399,6 +443,7 @@ footer a{color:#fff}
 <footer><div class="wrap">Green Hospital · โรงพยาบาลสีเขียว · <a href="index.html">กลับหน้าแรก</a></div></footer>
 <div class="toast" id="toast" role="status"></div>
 
+<script src="config.js"></script>
 <script src="campaigns.js"></script>
 <script>
 (function(){
@@ -410,6 +455,7 @@ footer a{color:#fff}
   const isActive = !!G.active(now);
   const C = G.featured(now);
   const isK = C.special === 'krathong';
+  const isQ = C.type === 'quiz';
   const year = C.when.getFullYear();
   const stampKey = C.id + '-' + year;
 
@@ -417,7 +463,11 @@ footer a{color:#fff}
   document.documentElement.style.setProperty('--c1', C.colors[0]);
   document.documentElement.style.setProperty('--c2', C.colors[1]);
   document.title = C.name + ' | Green Hospital';
-  document.querySelectorAll('[data-only]').forEach(el => { el.hidden = el.dataset.only !== (isK ? 'krathong' : 'generic'); });
+  document.querySelectorAll('[data-only]').forEach(el => { el.hidden = el.dataset.only !== (isK ? 'krathong' : isQ ? 'quiz' : 'generic'); });
+  if (isQ) {
+    const go = document.querySelector('.hero .cta [data-open-pc]');
+    go.removeAttribute('data-open-pc'); go.href = '#quiz'; go.textContent = '🎯 เริ่มตอบคำถาม ลุ้นรางวัล';
+  }
   $('hero').classList.toggle('generic', !isK);
   $('moon').hidden = !isK;
   $('ctaBuild').hidden = !isK;
@@ -426,7 +476,7 @@ footer a{color:#fff}
   $('heroTitle').innerHTML = isK ? '' : `<span class="ic" aria-hidden="true">${C.icon}</span>`;
   $('heroTitle').append(C.name);
   $('heroSlogan').textContent = C.slogan;
-  $('heroDate').textContent = G.thaiDate(C.when);
+  $('heroDate').textContent = (C.event ? 'ระยะเวลากิจกรรม ' : '') + G.dateText(C);
   if (params.get('date') || params.get('campaign')) {
     $('previewNote').hidden = false;
     $('previewText').textContent = 'กำลังแสดงตัวอย่าง' + (params.get('date') ? ' (สมมติวันนี้คือ ' + G.thaiDate(now) + ')' : '');
@@ -435,19 +485,24 @@ footer a{color:#fff}
   /* นับถอยหลัง */
   function tick() {
     const el = $('count');
-    if (C.daysLeft <= 0) { el.innerHTML = `<div class="today">${C.daysLeft === 0 ? '🎉 วันนี้คือ' + C.name : 'ขอบคุณที่ร่วมรณรงค์'}</div>`; return; }
+    // กิจกรรมเฉพาะช่วง: นับถอยหลังถึงวันเริ่ม แล้วนับถอยหลังถึงสิ้นสุดวันสุดท้าย
+    const target = C.event ? (C.daysLeft > 0 ? C.when : new Date(C.until.getTime() + 864e5)) : C.when;
+    if (!C.event && C.daysLeft <= 0) { el.innerHTML = `<div class="today">${C.daysLeft === 0 ? '🎉 วันนี้คือ' + C.name : 'ขอบคุณที่ร่วมรณรงค์'}</div>`; return; }
     const ref = params.get('date') ? now.getTime() : Date.now();
-    let ms = Math.max(0, C.when.getTime() - ref);
+    let ms = Math.max(0, target.getTime() - ref);
     const d = Math.floor(ms / 864e5); ms -= d * 864e5;
     const h = Math.floor(ms / 36e5); ms -= h * 36e5;
     const m = Math.floor(ms / 6e4);
-    el.innerHTML = [[d, 'วัน'], [h, 'ชั่วโมง'], [m, 'นาที']].map(([n, u]) => `<div><b>${n}</b><span>${u}</span></div>`).join('');
+    el.innerHTML = (C.event ? `<div class="today" style="padding:14px 16px;font-size:1.05rem">${C.daysLeft > 0 ? 'เริ่มใน' : 'ปิดรับใน'}</div>` : '') +
+      [[d, 'วัน'], [h, 'ชั่วโมง'], [m, 'นาที']].map(([n, u]) => `<div><b>${n}</b><span>${u}</span></div>`).join('');
   }
   tick(); setInterval(tick, 30000);
 
   /* เคล็ดลับ */
   $('tips').innerHTML = C.tips.map(t => `<li>${esc(t)}</li>`).join('');
   if (!isK) { $('factKicker').textContent = 'ทำได้ทันที'; $('factTitle').textContent = 'เคล็ดลับง่าย ๆ สำหรับ' + C.name; $('factLead').hidden = true; }
+  if (isQ) { $('factKicker').textContent = 'กติกา'; $('factTitle').textContent = 'คำแนะนำก่อนเล่น'; }
+  if (!(C.tips || []).length) $('facts').hidden = true;
   function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
   /* แถบเวลาย่อยสลาย: เล่นเมื่อเลื่อนมาเห็น */
@@ -579,7 +634,8 @@ footer a{color:#fff}
   dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener('close', () => { if (location.hash === '#postcard') history.replaceState(null, '', location.pathname + location.search); });
   // เปิดหน้านี้เมื่อไรให้เด้งป๊อปอัปร่วมรณรงค์ทันที (ยกเว้นลิงก์ที่ตั้งใจไปส่วนอื่น เช่น #build #calendar)
-  if (!location.hash || location.hash === '#postcard') setTimeout(openPC, 600);
+  if (!isQ && (!location.hash || location.hash === '#postcard')) setTimeout(openPC, 600);
+  if (isQ && location.hash === '#quiz') setTimeout(() => $('quiz').scrollIntoView({ behavior: 'smooth' }), 300);
   addEventListener('hashchange', () => { if (location.hash === '#postcard') openPC(); });
 
   const fileName = () => `postcard-${C.id}-${year}.png`;
@@ -599,6 +655,171 @@ footer a{color:#fff}
   const pageUrl = location.origin + location.pathname;
   $('lineBtn').href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(pageUrl);
 
+  /* ---------- เกมตอบคำถาม ----------
+   * คำถามโหลดจาก Apps Script (ชีต "คำถาม") หน้าเว็บไม่มีเฉลย
+   * เล่นจบแล้วส่งคำตอบให้ Apps Script ตรวจ (gradeQuiz) และตรวจซ้ำอีกครั้งตอนส่งชื่อ (submitQuiz)
+   */
+  if (isQ) {
+    const API = ((window.GH_CONFIG || {}).apiUrl || '').trim();
+    const bestKey = 'gh-quiz-' + C.id;
+    const preview = !!(params.get('date') || params.get('campaign'));
+    const notYet = C.daysLeft > 0 && !params.get('campaign');
+    const box = $('qz');
+    const best = () => { try { return JSON.parse(localStorage.getItem(bestKey) || 'null'); } catch (e) { return null; } };
+    const saveBest = o => localStorage.setItem(bestKey, JSON.stringify({ ...(best() || {}), ...o }));
+    const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    const deviceId = () => {
+      let d = localStorage.getItem('gh-device');
+      if (!d) { d = crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now(); localStorage.setItem('gh-device', d); }
+      return d;
+    };
+    async function readJson(res) {
+      if (!res.ok) throw new Error('เซิร์ฟเวอร์ตอบกลับผิดปกติ (' + res.status + ')');
+      const j = await res.json();
+      if (!j.ok) throw new Error(j.error || 'เกิดข้อผิดพลาด');
+      return j.data;
+    }
+    /* อ่านข้อมูล: GET (ไม่มีข้อมูลส่วนตัว) */
+    function call(action, q) {
+      const url = new URL(API); url.searchParams.set('action', action);
+      Object.entries(q || {}).forEach(([k, v]) => url.searchParams.set(k, v));
+      return fetch(url).then(readJson);
+    }
+    /* ส่งชื่อ: POST แบบ text/plain ชื่อจึงไม่อยู่ในลิงก์ และ Apps Script รับได้โดยไม่ติด CORS */
+    function post(body) {
+      return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).then(readJson);
+    }
+
+    let QZ = null, order, idx, answers, graded;
+
+    async function load() {
+      if (!API) { box.innerHTML = '<p class="warnbox">ยังไม่ได้ใส่ลิงก์ Apps Script ใน config.js จึงยังเล่นเกมนี้ไม่ได้</p>'; return; }
+      box.innerHTML = '<p class="muted">กำลังโหลดคำถาม…</p>';
+      try { QZ = await call('getQuiz', { campaign: C.id }); intro(); }
+      catch (e) {
+        box.innerHTML = `<p class="warnbox">โหลดคำถามไม่สำเร็จ: ${esc(e.message)}</p><div><button class="btn" type="button" id="qzRetry">ลองใหม่</button></div>`;
+        $('qzRetry').addEventListener('click', load);
+      }
+    }
+    function intro() {
+      const b = best();
+      $('qzLead').textContent = `ทั้งหมด ${QZ.total} ข้อ ตอบถูก ${QZ.pass} ข้อขึ้นไปมีสิทธิ์ลุ้นรางวัล · ${G.dateText(C)}`;
+      box.innerHTML = `
+        ${C.prize ? `<div class="prize"><span class="e" aria-hidden="true">🎁</span><div><b>${esc(C.prize)}</b><span class="muted">ของรางวัลกิจกรรมนี้</span></div></div>` : ''}
+        <ul class="rules">
+          <li>ตอบคำถาม ${QZ.total} ข้อ ข้อละ 1 คะแนน ตอบครบแล้วระบบจึงตรวจให้</li>
+          <li>ถูก ${QZ.pass} ข้อขึ้นไป ส่งชื่อเพื่อรับรหัสลุ้นรางวัล</li>
+          <li>ปิดรับ ${G.thaiDate(C.until)}</li>
+        </ul>
+        ${b ? `<p class="okbox">คะแนนที่ดีที่สุดของคุณ: <b>${b.score}/${QZ.total}</b>${b.code ? ` · รหัส <b>${esc(b.code)}</b>` : ''}${b.sent ? ' · ✅ ส่งชื่อเข้าร่วมลุ้นแล้ว' : ''}</p>` : ''}
+        <div><button class="btn primary" id="qzStart" type="button"${notYet ? ' disabled' : ''}>${notYet ? 'เริ่มเล่นได้ ' + G.thaiDate(C.when) : b ? '🔁 เล่นอีกครั้ง' : '🎯 เริ่มตอบคำถาม'}</button></div>`;
+      $('qzStart').addEventListener('click', start);
+    }
+    function start() {
+      order = shuffle(QZ.questions); idx = 0; answers = {}; ask();
+      $('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function ask() {
+      const q = order[idx], N = order.length;
+      const opts = shuffle(q.choices.map((t, i) => ({ t, i })));
+      box.innerHTML = `
+        <div class="progress"><span class="step">ข้อ ${idx + 1} / ${N}</span><span class="bar"><i style="width:${idx / N * 100}%"></i></span></div>
+        <p class="q">${esc(q.q)}</p>
+        <div class="qz-opts">${opts.map((o, k) => `<button type="button" data-i="${o.i}"><span class="k">${'กขคงจฉ'[k]}</span>${esc(o.t)}</button>`).join('')}</div>`;
+      box.querySelectorAll('.qz-opts button').forEach(btn => btn.addEventListener('click', () => {
+        answers[q.id] = +btn.dataset.i;
+        box.querySelectorAll('.qz-opts button').forEach(x => { x.disabled = true; });
+        btn.classList.add('sel');
+        setTimeout(() => { if (++idx < N) ask(); else finish(); }, 350);
+      }));
+      box.querySelector('.qz-opts button').focus({ preventScroll: true });
+    }
+    async function finish() {
+      box.innerHTML = '<p class="muted">กำลังตรวจคำตอบ…</p>';
+      try { graded = await call('gradeQuiz', { campaign: C.id, answers: JSON.stringify(answers) }); result(); }
+      catch (e) {
+        box.innerHTML = `<p class="warnbox">ตรวจคำตอบไม่สำเร็จ: ${esc(e.message)}</p><div><button class="btn" type="button" id="qzRetry">ลองส่งตรวจอีกครั้ง</button></div>`;
+        $('qzRetry').addEventListener('click', finish);
+      }
+    }
+    function review() {
+      const byId = {}; graded.results.forEach(r => { byId[r.id] = r; });
+      return `<ol class="review">${order.map((q, i) => {
+        const r = byId[q.id] || {};
+        return `<li class="${r.right ? 'ok' : 'no'}"><b>${r.right ? '✅' : '❌'} ข้อ ${i + 1}</b> ${esc(q.q)}
+          <span>คุณตอบ: ${esc(q.choices[answers[q.id]] ?? '—')}${r.right ? (r.explain ? ' · ' + esc(r.explain) : '') : ' · ยังไม่ถูก'}</span></li>`;
+      }).join('')}</ol>`;
+    }
+    function result() {
+      const { score, total, pass, passed } = graded;
+      const b = best();
+      if (!b || score > (b.score || 0)) saveBest({ score });
+      if (!passed) {
+        box.innerHTML = `<p class="step">ผลคะแนน</p><p class="score fail">${score}/${total}</p>
+          <p>ต้องตอบถูกอย่างน้อย ${pass} ข้อจึงลุ้นรางวัลได้ ลองอีกครั้งนะ</p>${review()}
+          <div class="builder-actions"><button class="btn primary" type="button" id="qzAgain">🔁 เล่นอีกครั้ง</button></div>`;
+        $('qzAgain').addEventListener('click', start);
+        return;
+      }
+      giveStamp();
+      box.innerHTML = `<div class="result">
+        <div style="display:grid;gap:12px">
+          <p class="step">ผลคะแนน</p><p class="score">${score}/${total} 🎉</p>
+          <p>ผ่านเกณฑ์ มีสิทธิ์ลุ้น${esc(C.prize || 'ของรางวัล')} กรอกข้อมูลแล้วกดส่งชื่อ</p>
+          <label class="f">ชื่อ-นามสกุล
+            <input id="qzName" maxlength="40" autocomplete="name" value="${esc($('pcName').value)}"></label>
+          <label class="f">หน่วยงาน / เบอร์ภายใน (สำหรับติดต่อรับรางวัล)
+            <input id="qzContact" maxlength="80" autocomplete="organization" value="${esc(localStorage.getItem('gh-contact') || '')}"></label>
+          <button class="btn gold" type="button" id="qzSend">📨 ส่งชื่อเข้าร่วมลุ้นรางวัล</button>
+          <p id="qzSent" class="okbox" role="status" hidden></p>
+          <div><span class="step">รหัสลุ้นรางวัล</span><div class="code" id="qzCode">กดส่งชื่อเพื่อรับรหัส</div></div>
+          ${C.claim ? `<p class="muted">${esc(C.claim)}</p>` : ''}
+          <div class="share">
+            <button class="btn" type="button" id="qzDl" disabled>⬇️ บันทึกรูปผลคะแนน</button>
+            <button class="btn" type="button" id="qzAgain">🔁 เล่นอีกครั้ง</button>
+          </div>
+        </div>
+        <canvas id="qzCard" width="1080" height="1350" role="img" aria-label="รูปผลคะแนน"></canvas></div>
+        <details><summary>ดูผลรายข้อ</summary>${review()}</details>`;
+      let code = '';
+      const draw = () => G.drawPostcard($('qzCard'), C, {
+        design: 'theme', name: $('qzName').value.trim(),
+        pledge: `ผ่านเกณฑ์ ${score}/${total} ข้อ`,
+        message: code ? `รหัสลุ้นรางวัล ${code}${preview ? ' (ทดสอบ)' : ''}` : 'กดส่งชื่อเพื่อรับรหัสลุ้นรางวัล'
+      });
+      draw();
+      const changed = () => { $('qzSend').disabled = !$('qzName').value.trim(); };
+      $('qzName').addEventListener('input', changed); changed();
+      $('qzSend').addEventListener('click', async () => {
+        const name = $('qzName').value.trim(), contact = $('qzContact').value.trim();
+        if (!name) return;
+        const btn = $('qzSend'), out = $('qzSent');
+        btn.disabled = true; btn.textContent = 'กำลังส่ง…';
+        localStorage.setItem('gh-name', name); localStorage.setItem('gh-contact', contact);
+        try {
+          const d = await post({ action: 'submitQuiz', campaign: C.id, name, contact, answers, device: deviceId(), test: preview });
+          code = d.code;
+          $('qzCode').textContent = code; $('qzDl').disabled = false; draw();
+          saveBest({ score: Math.max(d.best || 0, score), name, code, sent: true });
+          out.className = 'okbox'; out.hidden = false;
+          out.textContent = `✅ ส่งแล้ว บันทึกชื่อ "${name}" รหัส ${code} เรียบร้อย` + (d.updated ? ' (อัปเดตข้อมูลเดิม)' : '');
+          btn.textContent = '📨 ส่งแล้ว (กดส่งใหม่ได้ถ้าแก้ข้อมูล)';
+          toast('ส่งชื่อเข้าร่วมลุ้นรางวัลแล้ว');
+        } catch (e) {
+          out.className = 'warnbox'; out.hidden = false;
+          out.textContent = 'ส่งไม่สำเร็จ: ' + e.message + ' ลองกดส่งอีกครั้ง';
+          btn.textContent = '📨 ส่งอีกครั้ง';
+        }
+        btn.disabled = false;
+      });
+      $('qzDl').addEventListener('click', () => $('qzCard').toBlob(bl => {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = `quiz-${C.id}.png`; a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('บันทึกรูปผลคะแนนแล้ว');
+      }, 'image/png'));
+      $('qzAgain').addEventListener('click', start);
+    }
+    load();
+  }
   /* ---------- แสตมป์ ---------- */
   function stamps() { return JSON.parse(localStorage.getItem('gh-stamps') || '[]'); }
   function giveStamp() {
@@ -621,7 +842,7 @@ footer a{color:#fff}
   /* ---------- ปฏิทิน ---------- */
   $('cal').innerHTML = G.upcoming(now).map(c => `<li class="${c.id === C.id ? 'on' : ''}">
       <span class="e" aria-hidden="true">${c.icon}</span>
-      <span><b>${esc(c.name)}</b><span class="when">${G.thaiDate(c.when)} · ขึ้นแคมเปญอัตโนมัติก่อน ${c.lead} วัน</span></span>
+      <span><b>${esc(c.name)}</b><span class="when">${G.dateText(c)} · ${c.event ? 'กิจกรรมเฉพาะช่วง' : 'ขึ้นแคมเปญอัตโนมัติก่อน ' + c.lead + ' วัน'}</span></span>
       <span class="left">${G.countdownText(c)}<br><a href="?campaign=${c.id}">ดูตัวอย่าง</a></span></li>`).join('');
 })();
 </script>

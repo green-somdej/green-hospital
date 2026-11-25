@@ -1204,25 +1204,32 @@ trackVisit();
   if(!c) return;
   const qs=location.search.includes('date=')||location.search.includes('campaign=')?location.search:'';
   const key=c.id+'-'+c.when.getFullYear();
+  const isQ=c.type==='quiz', hash=isQ?'#quiz':'#postcard';
   const bar=document.getElementById('cbar');
   bar.style.setProperty('--cc1',c.colors[0]); bar.style.setProperty('--cc2',c.colors[1]);
   document.getElementById('cbIc').textContent=c.icon;
   document.getElementById('cbTitle').textContent=c.name+' · '+G.countdownText(c);
-  document.getElementById('cbSub').textContent=c.slogan;
-  document.getElementById('cbGo').href='campaign.html'+qs+'#postcard';
+  document.getElementById('cbSub').textContent=isQ&&c.prize?'🎁 '+c.prize:c.slogan;
+  const go=document.getElementById('cbGo');
+  go.href='campaign.html'+qs+hash;
+  if(isQ) go.textContent='🎯 ร่วมเล่น ลุ้นรางวัล';
   if(sessionStorage.getItem('gh-cbar')!==key) bar.hidden=false;
   document.getElementById('cbX').addEventListener('click',()=>{ bar.hidden=true; sessionStorage.setItem('gh-cbar',key); });
 
   /* โปสการ์ดเด้งขึ้นทุกครั้งที่เปิดหน้าเว็บ ระหว่างช่วงรณรงค์ */
   const pop=document.getElementById('cpop');
-  pop.querySelector('a').href='campaign.html'+qs+'#postcard';
+  /* กิจกรรมที่ยังไม่เริ่ม (ช่วงประกาศล่วงหน้า) แสดงแค่แถบ ไม่เด้ง */
+  if(c.event&&c.daysLeft>0) return;
+  const popA=pop.querySelector('a');
+  popA.href='campaign.html'+qs+hash;
+  if(isQ) popA.textContent='🎯 เริ่มตอบคำถาม';
   document.getElementById('cpTitle').textContent=c.icon+' '+c.name;
-  document.getElementById('cpText').textContent=G.thaiDate(c.when)+' ('+G.countdownText(c)+') · '+c.slogan;
+  document.getElementById('cpText').textContent=G.dateText(c)+' ('+G.countdownText(c)+') · '+(isQ&&c.prize?'รางวัล: '+c.prize:c.slogan);
   const close=()=>pop.close();
   document.getElementById('cpClose').addEventListener('click',close);
   pop.addEventListener('click',e=>{ if(e.target===pop) close(); });
   /* สุ่มลายธรรมชาติและคำอวยพร แต่ละคนจะได้ไม่เหมือนกัน */
-  G.drawPostcard(document.getElementById('cpCanvas'),c,{design:G.randomDesign(c).id,message:G.randomBlessing(c),pledge:c.special==='krathong'?'':'ฉันจะ'+c.actions[0]})
+  G.drawPostcard(document.getElementById('cpCanvas'),c,{design:G.randomDesign(c).id,message:isQ?'ตอบคำถามให้ผ่านเกณฑ์ แล้วส่งชื่อลุ้นรับรางวัล':G.randomBlessing(c),pledge:c.special==='krathong'?'':isQ?'🎁 '+(c.prize||'ลุ้นรับของรางวัล'):'ฉันจะ'+c.actions[0]})
     .then(()=>setTimeout(()=>{ if(!document.querySelector('dialog[open]')) pop.showModal(); },1200));
 })();
 </script>

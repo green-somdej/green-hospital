@@ -5,7 +5,7 @@
  * - ข้อมูลจาก Google Sheet ไม่ได้เก็บที่นี่ หน้าเว็บเก็บเองใน localStorage
  * ถ้าเพิ่มหรือเปลี่ยนชื่อไฟล์ ให้เปลี่ยนเลข VERSION ด้วย
  */
-const VERSION = 'gh-v3';
+const VERSION = 'gh-v4';
 const SHELL = [
   './',
   './index.html',
